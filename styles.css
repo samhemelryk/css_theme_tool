@@ -1,0 +1,93 @@
+.block_css_theme_tool {display:none;}
+.block_css_theme_tool .content {text-align:center;}
+.block_css_theme_tool .content input {width:90%;margin:3px;border:1px outset #00b3ff; background-color:#D6F3FF;font-size:8pt;-moz-border-radius:5px;}
+.block_css_theme_tool .content .cssnotsupported {font-size:80%;color:#A00;}
+.block_css_theme_tool .content .cssnotsupported hr {border-width:1px 0 0 0;border-color:#A00;width:70%;margin:2px 15%;}
+.block_css_theme_tool .footer  {margin-top:5px;font-size:7pt;}
+.jsenabled .block_css_theme_tool {display:block;}
+.jsenabled.ie6 .block_css_theme_tool {display:hidden;}
+
+#css_theme_tool .css_builder_overlay {background-color:#EEE;padding:10px;border:1px solid #333;overflow:auto;}
+#css_theme_tool .css_builder .css_selectors {background-color:#FFF;margin:10px;border:1px solid #BBB;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox {border-top:1px solid #DDD;overflow:hidden;font-size:8pt;clear:both;padding:2px;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox:first-child {border-top-width:0px;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox input[type=checkbox] {font-size:6pt;vertical-align: middle;margin-right:2px;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox label {color:#333;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .isselected label {font-weight:bold;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagname {width:80px;float:left;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagid {width:120px;float:left;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagclasses {margin-left:200px;overflow:hidden;margin-right:300px;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagclasses .tagclass {float:left;min-width:33%;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagproperties {float:right;width:300px;}
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagproperties .tagproperty {float:left;margin-right:1em;}
+
+#css_theme_tool .css_builder .css_current_selector .tagname,
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagname.isselected label {color:#006BC4;}
+#css_theme_tool .css_builder .css_current_selector .tagid,
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagid.isselected label {color:#760000;}
+#css_theme_tool .css_builder .css_current_selector .tagclass,
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagclasses .tagclass.isselected label {color:#097800;}
+#css_theme_tool .css_builder .css_current_selector .tagproperty,
+#css_theme_tool .css_builder .css_selectors .tagselectorbox .tagclasses .tagproperty.isselected label {color:#CB8200;}
+
+#css_theme_tool .css_builder .css_selector_controls {background-color:#EFEFEF;height:24px;margin:0 10px 10px 10px;}
+#css_theme_tool .css_builder .css_selector_controls .control {float:left;width:24px;height:24px;background-color:#DDD;}
+#css_theme_tool .css_builder .css_selector_controls .control.backgroundcolourpicker {background-image:url([[pix:block_css_theme_tool|backgroundColor]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.colourpicker {background-image:url([[pix:block_css_theme_tool|color]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.bold {background-image:url([[pix:block_css_theme_tool|bold]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.italic {background-image:url([[pix:block_css_theme_tool|italic]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.underline {background-image:url([[pix:block_css_theme_tool|underline]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.alignleft {background-image:url([[pix:block_css_theme_tool|alignLeft]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.aligncenter {background-image:url([[pix:block_css_theme_tool|alignCenter]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.alignright {background-image:url([[pix:block_css_theme_tool|alignRight]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.roundedcorners {background-image:url([[pix:block_css_theme_tool|roundedCorners]]);}
+#css_theme_tool .css_builder .css_selector_controls .control.opacity {background-image:url([[pix:block_css_theme_tool|opacity]]);}
+#css_theme_tool .css_builder .css_selector_controls .colorpickerdialogue {margin:0;height:48px;width:766px;background-color:#FFF;border:1px solid #000;background-image:url(/m20dev3/blocks/css_theme_tool/colourpicker_image.php);visibility:hidden;position:absolute;}
+
+.ctt-colourpicker {background-color:#999;border-bottom:5px solid #999;border-right:5px solid #999;}
+.ctt-colourpicker .yui3-widget-hd h2.header {margin:0;padding:5px;border-bottom:1px solid #BBB;font-size:10pt;}
+.ctt-colourpicker .yui3-widget-hd .close {position:absolute;top:3px;right:6px;background-color:#666;width:12px;height: 12px;cursor:pointer;}
+.ctt-colourpicker .yui3-overlay-content {background-color:#EEE;border:1px solid #555;margin-top:-5px;margin-left:-5px;}
+.ctt-colourpicker .colorpickerdialogueoverlay {margin:3px 3px 0 3px;height:128px;width:384px;background-color:#FFF;border:1px solid #000;background-image:url(/m20dev3/blocks/css_theme_tool/colourpicker_image.php);cursor:crosshair;}
+.ctt-colourpicker .previouscolours {margin:3px;height:20px;border:1px solid #555;}
+.ctt-colourpicker .previouscolours .previouscolour {width:5%;height:20px;float:left;}
+
+#css_theme_tool .css_builder .css_current_selector {font-weight:bold;background-color:#FFF;margin:10px 10px 0 10px;border:1px solid #BBB;min-height:1em;font-size:8pt;color:#333;padding:5px;}
+#css_theme_tool .css_builder .css_current_selector ul {margin:2px 16px;}
+#css_theme_tool .css_builder .css_current_selector ul li {list-style: none;margin:2px;}
+#css_theme_tool .css_builder .css_current_selector ul li .addnewstyle {color:#AAA;padding:2px 0px;}
+#css_theme_tool .css_builder .css_current_selector ul li.hideme {visibility:hidden;display:none;height:1px;}
+#css_theme_tool .css_builder .css_current_selector ul li input[type=text] {width:100%;border:1px inset #bbb;padding:1px;}
+#css_theme_tool .css_builder .css_current_selector ul li .icon {margin-right:5px;vertical-align:middle;cursor:pointer;}
+
+#mousemovetrackdiv {background-color:#B2E8FF;z-index:50;}
+#mousemovetrackdiv div {position:fixed;border:0 solid #00A8EF;background-image:url([[pix:block_css_theme_tool|transpixel]])}
+#mousemovetrackdiv div.top {top:0;left:0;width:100%;height:0;border-bottom-width:1px;margin-bottom:1px;}
+#mousemovetrackdiv div.bottom {bottom:0;left:0;width:100%;height:0;border-top-width:1px;margin-top:1px;}
+#mousemovetrackdiv div.left {top:0;left:0;height:100%;width:0;border-right-width:1px;margin-right:1px;}
+#mousemovetrackdiv div.right {top:0;right:0;height:100%;width:0;border-left-width:1px;margin-left:1px;}
+
+#css_theme_tool .viewcssbox {margin:10px;border:1px solid #ddd;background-color:#fff;padding:7px 0;}
+#css_theme_tool .viewcssbox .cssrule {margin:3px 10px;}
+#css_theme_tool .viewcssbox .cssrule .selector {font-weight:bold;color:#097800;}
+#css_theme_tool .viewcssbox .cssrule .icon {margin-right:5px;vertical-align:middle;cursor:pointer;}
+
+.yui3-overlay .yui3-widget-bd.colourpicker_preview {background-color:#FFF;border:2px solid #000;}
+
+.rounded_corner_component {background-color:#EEE;border:1px solid #333;overflow:hidden;position:fixed;}
+.rounded_corner_component .yui3-widget-hd .header {margin:0;padding:5px;}
+.rounded_corner_component .yui3-widget-bd .inputs {margin:5px 10px;}
+.rounded_corner_component .yui3-widget-bd .inputs div {clear:both;margin-bottom:2px;}
+.rounded_corner_component .yui3-widget-bd .inputs label {width:45%;text-align:right;font-weight:bold;display:block;float:left;margin-right:1em;}
+.rounded_corner_component .yui3-widget-bd .buttons {margin:5px 10px;}
+
+.cssbuilder_bodywash {position:fixed;top:0px;left:0px;width:100%;height:100%;background-color:#FFF;opacity:0.7;}
+.cssbuilder_cellhighlight {border:1px solid #00b3ff;background-color:#D6F3FF;position:absolute;z-index:10000;}
+
+.settingscontainer {}
+.settingscontainer .settingbox {overflow:hidden;background-color:#FFF;border:1px solid #DDD;padding:8px;border-top-width:0;}
+.settingscontainer .settingbox .settingdescription {margin-left:150px;}
+.settingscontainer .settingbox input {float:left;}
+.settingscontainer .settingbox input[type=button] {width:140px;}
+.settingscontainer .settingbox input[type=checkbox] {margin-left:130px;}
+.settingscontainer .overlaycontrols {overflow:hidden;text-align:center;background-color:#E6E6E6;border:1px solid #DDD;padding:4px;border-top-width:0;}

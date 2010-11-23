@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/css_theme_tool/db" VERSION="20100329" COMMENT="XMLDB file for Moodle blocks/css_theme_tool"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_css_theme_tool" COMMENT="Stores CSS rules created with the CSS theme tool" NEXT="block_css_theme_tool_styles">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="selector"/>
+        <FIELD NAME="selector" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" COMMENT="The CSS selector for this rule" PREVIOUS="id" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" PREVIOUS="selector" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="timemodified"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_css_theme_tool_styles" COMMENT="Styles for rules in block_css_theme_tool" PREVIOUS="block_css_theme_tool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="ruleid"/>
+        <FIELD NAME="ruleid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Relates to the id of the rule this style is for" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="The name of the CSS style" PREVIOUS="ruleid" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" COMMENT="The value for this style" PREVIOUS="name"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>

@@ -1,0 +1,105 @@
+CSS THEME TOOL README
+
+Description:
+    The CSS theme tool is a block that is designed to make CSS creation and
+editing for Moodle both easy and accessible.
+It aims to provide a point and click interface with WYSIWYG controls for adding
+CSS rules and provides a user friendly interface for creating CSS that is suitable
+for everything from creating simple modifications to creating entire themes.
+As well as giving the user an easy means to create CSS it also allows the admin
+or a Moodle site to make immediate modifications to the installations CSS that
+will be visible by everyone using the site (not just those who can create CSS)
+and does this all without the need for editing any files within Moodle or even
+having to create or modify themes.
+
+
+About the CSS theme tool block:
+    This block was created during development of Moodle 2.0 before it was even in
+beta. My apologies if it no longer works and is out of date obviously I have not
+found time enough to maintain it.
+The block itself is 100% reliant on JavaScript trying to use it without JavaScript
+will simply mean you don't see the block at all, however the rules you made using
+it when you had JavaScript enabled will still be visible.
+Cross browser compatible.... if you're lucky. This block was developed using
+Firefox which I would recommend using it with initially. It wouldn't surprise me
+to hear it worked with Chrome, Safari, and Opera. But I do not expect it to
+work with Internet Explorer...Microsoft could sponsor me to do that ;)
+If you find bugs with this block please check first if they are listed in this
+file in the following section and if not please report them to me.
+Whilst I cannot guarantee that I will have time to maintain this block I will
+certainly aim to put in a gallant effort initially.
+
+
+Installation:
+    Simply put the block into your Moodle installations blocks directory (/blocks/)
+and then log into your site as an administrator and visit /admin/ if you are not
+prompted to upgrade immediately.
+This block creates two tables within your Moodle database which are both used to
+store CSS rules and styles. If you choose to remove this block make sure you
+remove the two tables as well:
+    * block_css_theme_tool
+    * block_css_theme_tool_styles
+
+
+Still coming, To-Do's, and bugs:
+# todo:             Finish PHP docs
+# todo:             Test
+# functionality:    Implement capabilities for the block so that more than just
+                    Admins can use it if desired.
+# functionality:    Export a theme (how cool will this be)
+# functionality:    CSS optimisation and refactoring
+# functionality:    Cache CSS files for serving rather than rebuilding every time
+# functionality:    Better caching for colour picker image
+# bug :             Cross browser support... will test... maybe fix
+
+About the creator:
+    Hi my name is Sam Hemelryk, I am a senior developer at Moodle HQ and have
+been with the project since June 2009. When I first started at HQ Moodle 2.0 was
+already well under construction but still well of being release and I was lucky
+enough to experience the growth that it went through.
+I started writing this block in March 2010 in the little bit of free time that I
+something find myself with.
+I started writing this block as I wanted to explore the knowledge that I had
+gained and put into use some of the cool stuff I had seen, used, and heard about.
+The most recent task I had undertaken at HQ was writing the base theme and
+standard themes for Moodle 2.0. This is why I created a theme creation block.
+This block attempts to use as much of Moodle 2.0's new API as is practical and I
+hope that it provides both useful functionality for themers and a good code
+reference for other plugin developers.
+One last thing before I wrap up if you have any requests for this block or would
+like to know anything more about it please feel free to post in the Moodle forums
+or email me at sam.hemelryk@gmail.com
+
+Visual version guide:
+
+ 0.2.2                                                            [CONTRIB-1984]
+    - Added a version.php file as it is now required
+    - Fixed regressions from file API changes
+
+ 0.2.1                                                            [CONTRIB-2179]
+    - Made the colour picker a dialogue
+    - Added support for previously picked colours
+    - Fixed bug with the colourpicker image generation
+
+ 0.2.0                                                            [CONTRIB-1987]
+    - Added capability to allow access to modify styles
+    - Added 'only view my css' setting + functionality
+    - Fixed bug with positioning of css builder and viewer
+    - Added preview functionality
+    - Fixed the highlight buttons bugs
+
+ 0.1.2                                                            [CONTRIB-1984]
+    - Fixed bug when editing an existing CSS rule
+    - Added support for CSS 2.1 and 3.0 selectors:
+        - first-child
+        - last-child
+        - after
+        - before
+
+ 0.1.1                                                            [CONTRIB-2131]
+    - Added the auto-save setting
+
+ 0.1.0                                                            [CONTRIB-1984]
+    - Introduced the visual version
+    - Added a rounded corner button to the css builder
+    - Added an opacity button to the css builder
