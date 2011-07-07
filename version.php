@@ -16,3 +16,5 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 $plugin->version = 2010061800;
+$plugin->maturity = MATURITY_BETA;
+$plugin->release = 'CSS Theme Tool - 0.2.2'; 
