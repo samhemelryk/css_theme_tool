@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-dialogue-roundedcorners', function(Y) {
+YUI.add('moodle-block_css_theme_tool-dialogueroundedcorners', function(Y) {
 
 var ROUNDEDCORNERS = function(config) {
     ROUNDEDCORNERS.superclass.constructor.apply(this, arguments);
@@ -16,7 +16,7 @@ ROUNDEDCORNERS.prototype = {
     overlay : null,
     overlayshown : false,
     initializer : function(config) {
-        this.cssbuilder = cssbuilder;
+        this.cssbuilder = config.cssbuilder;
 
         // Create the 4 inputs required to collect the value for the four corners
         this.nodes.topleft = Y.Node.create('<input type="text" size="5" value="10px" name="rc_topleft" />');
@@ -54,10 +54,10 @@ ROUNDEDCORNERS.prototype = {
 
         // Attach the set and cancel events
         this.nodes.cancelbutton.on('click', this.hide, this);
-        this.nodes.setbutton.on('click', this.set, this);
+        this.nodes.setbutton.on('click', this.set_value_from_form, this);
 
         // Attach the show event
-        button.on('click', this.show, this);
+        config.button.on('click', this.show, this);
     },
     /**
      * Show the component overlay
@@ -69,7 +69,7 @@ ROUNDEDCORNERS.prototype = {
     /**
      * Process the form and set the rounded corner attributes
      */
-    set : function() {
+    set_value_from_form : function() {
         var tl = this.nodes.topleft.get('value') || false;
         var tr = this.nodes.topright.get('value') || false;
         var bl = this.nodes.bottomleft.get('value') || false;
@@ -125,4 +125,4 @@ M.block_css_theme_tool.init_rounded_corners = function(config) {
 }
 
 
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

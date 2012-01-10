@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-dialogue-opacity', function(Y) {
+YUI.add('moodle-block_css_theme_tool-dialogueopacity', function(Y) {
 
 var OPACITY = function(config) {
     OPACITY.superclass.constructor.apply(this, arguments);
@@ -6,8 +6,8 @@ var OPACITY = function(config) {
 OPACITY.prototype = {
     cssbuilder : null,
     initializer : function(config) {
-        this.cssbuilder = cssbuilder;
-        button.on('click', this.show, this);
+        this.cssbuilder = config.cssbuilder;
+        config.button.on('click', this.show, this);
     },
     show : function() {
         var opacity = prompt(M.str.block_css_theme_tool.opacityprompt);
@@ -33,5 +33,4 @@ M.block_css_theme_tool.init_dialogue_opacity = function(config) {
     return new OPACITY(config);
 }
 
-
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

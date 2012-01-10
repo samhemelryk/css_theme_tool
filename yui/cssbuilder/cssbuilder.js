@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-cssbuilder', function(Y) {
+YUI.add('moodle-block_css_theme_tool-cssbuilder', function(Y) {
 
 var CSSBUILDER = function(config) {
     CSSBUILDER.superclass.constructor.apply(this, arguments);
@@ -50,7 +50,7 @@ CSSBUILDER.prototype = {
     components : [],
     initializer : function(config) {
         // Store the arguments
-        this.themetool = themetool;
+        this.themetool = config.cssthemetool;
         // Create the mask. This will be used to capture click events
         this.mask = new Y.Overlay({
             bodyContent : ' ',
@@ -85,16 +85,16 @@ CSSBUILDER.prototype = {
         this.themetool.hide_components();
         // Show the mask
         this.mask.show();
-        // Capture all body clicks
-        this.eventcaptureclick = this.mask.bodyNode.on('click', this.capture_click, this);
         // Create a set of divs to highlight the element under the mouse
         var div = Y.one('#mousemovetrackdiv') || (function(Y){
-            var div = Y.Node.create('<div id="mousemovetrackdiv"><div class="top"></div><div class="bottom"></div><div class="left"></div><div class="right"></div></div>');
+            var div = Y.Node.create('<div id="mousemovetrackdiv"><div class="inner-border"><div class="inner-background"></div></div></div>');
             div.setStyle('opacity', 0.4);
             Y.one(document.body).append(div);
             return div;
         })(Y);
         div.setStyle('visibility', 'visible');
+        // Capture all body clicks
+        this.eventcaptureclick = div.on('click', this.capture_click, this);
         // Attach the highlight event
         this.eventmousemove = Y.one(document.body).on('mousemove', this.highlight_cell_below_event, this, div);
     },
@@ -141,15 +141,22 @@ CSSBUILDER.prototype = {
         this.mask.show();
         // Get the position of the target node
         var pos = target.getXY();
+        div.setXY(pos);
+        div.setStyle('width', target.get('offsetWidth')+'px');
+        div.setStyle('height', target.get('offsetHeight')+'px');
+        div.one('.inner-border').setStyle('width', (target.get('offsetWidth')-12)+'px').setStyle('height', (target.get('offsetHeight')-12)+'px');
+        return;
+
         // Get the scroll position .... grr
-        var scrollY = Y.get('window').get('scrollY');
+        var scrollY = Y.one('window').get('scrollY');
         // Get the window width and hieght
-        var winpos = [Y.get(document.body).get('winWidth'), Y.get(document.body).get('winHeight')];
+        var winpos = [Y.one(document.body).get('winWidth'), Y.one(document.body).get('winHeight')];
         // Change the highlight div dimensions to highlight the node being hovered over
-        div.one('.top').setStyle('height', (pos[1]-scrollY)+'px');
-        div.one('.left').setStyle('width', pos[0]+'px');
-        div.one('.bottom').setStyle('height', (winpos[1]-pos[1]-target.get('offsetHeight')+scrollY)+'px');
-        div.one('.right').setStyle('width', (winpos[0]-pos[0]-target.get('offsetWidth'))+'px');
+
+        div.one('.top').setStyle('height', Math.round(pos[1]-scrollY).toString()+'px');
+        div.one('.left').setStyle('width', Math.round(pos[0]).toString()+'px');
+        div.one('.bottom').setStyle('height', Math.round(winpos[1]-pos[1]-target.get('offsetHeight')+scrollY).toString()+'px');
+        div.one('.right').setStyle('width', Math.round(winpos[0]-pos[0]-target.get('offsetWidth')).toString()+'px');
     },
     /**
      * Highlights all of the cells that the current rule selector is going to be
@@ -206,7 +213,6 @@ CSSBUILDER.prototype = {
 
             // Creating control structure
             var controls = create('<div class="css_selector_controls"></div>');
-            controls.append(create('<div class="colorpickerdialogue"></div>'));
             controls.append(create('<div class="control colourpicker" title="'+str.fontcolour+'"> </div>'));
             controls.append(create('<div class="control backgroundcolourpicker" title="'+str.backgroundcolour+'"> </div>'));
             controls.append(create('<div class="control bold" title="'+str.bold+'"> </div>'));
@@ -251,16 +257,17 @@ CSSBUILDER.prototype = {
             controls.append(buttons);
 
             // Wiring control structure
-            this.components['colour'] = M.block_css_theme_tool.init_dialogue_colour_picker(this, controls.one('.control.colourpicker'), 'color');
-            this.components['backgroundcolor'] = M.block_css_theme_tool.init_dialogue_colour_picker(this, controls.one('.control.backgroundcolourpicker'), 'background-color');
-            this.components['roundedcorners'] = M.block_css_theme_tool.init_dialogue_rounded_corners(this, controls.one('.control.roundedcorners'));
-            this.components['opacity'] = M.block_css_theme_tool.init_dialogue_opacity(this, controls.one('.control.opacity'));
-            this.components['bold'] = new ADDSYTLEBUTTON(this, controls.one('.control.bold'), 'font-weight: bold;');
-            this.components['italic'] = new ADDSYTLEBUTTON(this, controls.one('.control.italic'), 'font-style: italic;');
-            this.components['underline'] = new ADDSYTLEBUTTON(this, controls.one('.control.underline'), 'text-decoration: underline;');
-            this.components['alignleft'] = new ADDSYTLEBUTTON(this, controls.one('.control.alignleft'), 'text-align: left;');
-            this.components['aligncenter'] = new ADDSYTLEBUTTON(this, controls.one('.control.aligncenter'), 'text-align: center;');
-            this.components['alignright'] = new ADDSYTLEBUTTON(this, controls.one('.control.alignright'), 'text-align: right;');
+            this.components['colour'] = M.block_css_theme_tool.init_colour_picker({cssbuilder:this, button:controls.one('.control.colourpicker'), cssstyle:'color'});
+            this.components['backgroundcolor'] = M.block_css_theme_tool.init_colour_picker({cssbuilder:this, button:controls.one('.control.backgroundcolourpicker'), cssstyle:'background-color'});
+            this.components['roundedcorners'] = M.block_css_theme_tool.init_rounded_corners({cssbuilder:this, button:controls.one('.control.roundedcorners')});
+            this.components['opacity'] = M.block_css_theme_tool.init_dialogue_opacity({cssbuilder:this, button:controls.one('.control.opacity')});
+            
+            this.components['bold'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.bold'), cssstyle:'font-weight: bold;'});
+            this.components['italic'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.italic'), cssstyle:'font-style: italic;'});
+            this.components['underline'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.underline'), cssstyle:'text-decoration: underline;'});
+            this.components['alignleft'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.alignleft'), cssstyle:'text-align: left;'});
+            this.components['aligncenter'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.aligncenter'), cssstyle:'text-align: center;'});
+            this.components['alignright'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.alignright'), cssstyle:'text-align: right;'});
 
             this.controlsnode = controls;
         }
@@ -641,10 +648,10 @@ ADDSYTLEBUTTON.prototype = {
      */
     style : null,
     initializer : function(config) {
-        this.cssbuilder = cssbuilder;
-        this.button = button;
-        this.style = style;
-        button.on('click', this.add_style, this);
+        this.cssbuilder = config.cssbuilder;
+        this.button = config.button;
+        this.style = config.cssstyle;
+        this.button.on('click', this.add_style, this);
     },/**
      * Adds the style to the CSS builder
      */
@@ -667,4 +674,4 @@ M.block_css_theme_tool.init_css_builder = function(config) {
     return new CSSBUILDER(config);
 }
 
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-cssviewer', function(Y) {
+YUI.add('moodle-block_css_theme_tool-cssviewer', function(Y) {
 
 var CSSVIEWER = function(config) {
     CSSVIEWER.superclass.constructor.apply(this, arguments);
@@ -23,7 +23,7 @@ CSSVIEWER.prototype = {
      *
      */
     initializer : function(config) {
-        this.themetool = config.themetool;
+        this.themetool = config.cssthemetool;
         // Attach the event to display the CSS
         Y.one('.block_css_theme_tool input.viewcssbutton').removeAttribute('disabled').on('click', this.show, this);
     },
@@ -100,4 +100,4 @@ M.block_css_theme_tool.init_css_viewer = function(config) {
     return new CSSVIEWER(config);
 }
 
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

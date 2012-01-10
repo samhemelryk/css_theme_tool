@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-colourpicker', function(Y) {
+YUI.add('moodle-block_css_theme_tool-colourpicker', function(Y) {
 
 var COLOURPICKER = function(config) {
     COLOURPICKER.superclass.constructor.apply(this, arguments);
@@ -64,9 +64,9 @@ COLOURPICKER.prototype = {
         mouseleave : null
     },
     initializer : function(config) {
-        this.cssbuilder = cssbuilder;
+        this.cssbuilder = config.cssbuilder;
         this.currentcolour = '#FFFFFF';
-        this.cssstyle = cssstyle;
+        this.cssstyle = config.cssstyle;
 
         this.box = new Y.Overlay({
             headerContent : '<h2 class="header">'+M.str.block_css_theme_tool.colourpickertitle+'</h2><div class="close"></div>',
@@ -78,6 +78,7 @@ COLOURPICKER.prototype = {
         this.box.render(Y.one(document.body));
         this.box.get('boundingBox').one('.close').on('click', this.hide, this);
         this.dialogue = this.box.get('boundingBox').addClass('ctt-colourpicker').one('.colorpickerdialogueoverlay');
+        this.dialogue.setStyle('backgroundImage', 'url('+M.cfg.wwwroot+'/blocks/css_theme_tool/colourpicker_image.php)');
         this.dialogue.on('click', this.pick_colour, this);
         this.dialogue.on('mouseenter', this.start_follow, this);
         this.dialogue.on('mouseleave', this.stop_follow, this);
@@ -90,9 +91,9 @@ COLOURPICKER.prototype = {
             visible : false,
             zIndex : 4600
         });
-        this.overlay.render(this.cssbuilder.Y.one(document.body));
+        this.overlay.render(Y.one(document.body));
         this.overlay.bodyNode.addClass('colourpicker_preview');
-        button.on('click', this.show, this);
+        config.button.on('click', this.show, this);
 
         var previous = Y.Cookie.get("cttpreviouscolours");
         if (previous && M.block_css_theme_tool.previouscolours.length == 0) {
@@ -214,7 +215,6 @@ COLOURPICKER.prototype = {
         this.hide();
     },
     set_current_colour : function(addcolour) {
-        var Y = this.cssbuilder.Y;
         var previous = M.block_css_theme_tool.previouscolours;
         if (addcolour) {
             previous.push(addcolour);
@@ -229,7 +229,7 @@ COLOURPICKER.prototype = {
                 }
             }
         }
-        Y.Cookie.set("cttpreviouscolours", previous.join(';'), { expires: new Date("January 12, 2025") });
+        Y.Cookie.set("cttpreviouscolours", previous.join(';'), {expires: new Date("January 12, 2025")});
     },
     /**
      * Shows the colour picker component
@@ -274,6 +274,7 @@ Y.augment(COLOURPICKER, Y.EventTarget);
 M.block_css_theme_tool.init_colour_picker = function(config) {
     return new COLOURPICKER(config);
 }
+M.block_css_theme_tool.previouscolours = [];
 
 
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

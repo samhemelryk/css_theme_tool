@@ -42,13 +42,13 @@
 #css_theme_tool .css_builder .css_selector_controls .control.alignright {background-image:url([[pix:block_css_theme_tool|alignRight]]);}
 #css_theme_tool .css_builder .css_selector_controls .control.roundedcorners {background-image:url([[pix:block_css_theme_tool|roundedCorners]]);}
 #css_theme_tool .css_builder .css_selector_controls .control.opacity {background-image:url([[pix:block_css_theme_tool|opacity]]);}
-#css_theme_tool .css_builder .css_selector_controls .colorpickerdialogue {margin:0;height:48px;width:766px;background-color:#FFF;border:1px solid #000;background-image:url(/m20dev3/blocks/css_theme_tool/colourpicker_image.php);visibility:hidden;position:absolute;}
+#css_theme_tool .css_builder .css_selector_controls .colorpickerdialogue {margin:0;height:48px;width:766px;background-color:#FFF;border:1px solid #000;visibility:hidden;position:absolute;}
 
 .ctt-colourpicker {background-color:#999;border-bottom:5px solid #999;border-right:5px solid #999;}
 .ctt-colourpicker .yui3-widget-hd h2.header {margin:0;padding:5px;border-bottom:1px solid #BBB;font-size:10pt;}
 .ctt-colourpicker .yui3-widget-hd .close {position:absolute;top:3px;right:6px;background-color:#666;width:12px;height: 12px;cursor:pointer;}
 .ctt-colourpicker .yui3-overlay-content {background-color:#EEE;border:1px solid #555;margin-top:-5px;margin-left:-5px;}
-.ctt-colourpicker .colorpickerdialogueoverlay {margin:3px 3px 0 3px;height:128px;width:384px;background-color:#FFF;border:1px solid #000;background-image:url(/m20dev3/blocks/css_theme_tool/colourpicker_image.php);cursor:crosshair;}
+.ctt-colourpicker .colorpickerdialogueoverlay {margin:3px 3px 0 3px;height:128px;width:384px;background-color:#FFF;border:1px solid #000;cursor:crosshair;}
 .ctt-colourpicker .previouscolours {margin:3px;height:20px;border:1px solid #555;}
 .ctt-colourpicker .previouscolours .previouscolour {width:5%;height:20px;float:left;}
 
@@ -60,12 +60,18 @@
 #css_theme_tool .css_builder .css_current_selector ul li input[type=text] {width:100%;border:1px inset #bbb;padding:1px;}
 #css_theme_tool .css_builder .css_current_selector ul li .icon {margin-right:5px;vertical-align:middle;cursor:pointer;}
 
+/**
 #mousemovetrackdiv {background-color:#B2E8FF;z-index:50;}
 #mousemovetrackdiv div {position:fixed;border:0 solid #00A8EF;background-image:url([[pix:block_css_theme_tool|transpixel]])}
 #mousemovetrackdiv div.top {top:0;left:0;width:100%;height:0;border-bottom-width:1px;margin-bottom:1px;}
 #mousemovetrackdiv div.bottom {bottom:0;left:0;width:100%;height:0;border-top-width:1px;margin-top:1px;}
 #mousemovetrackdiv div.left {top:0;left:0;height:100%;width:0;border-right-width:1px;margin-right:1px;}
 #mousemovetrackdiv div.right {top:0;right:0;height:100%;width:0;border-left-width:1px;margin-left:1px;}
+**/
+
+#mousemovetrackdiv {width:16px;height:16px;position:absolute;opacity:0.5;cursor:pointer;z-index:50;border:1px solid #00A8EF;}
+#mousemovetrackdiv .inner-border {border:5px solid #B2E8FF;width:100%;height: 100%;position:absolute;margin-right:10px;}
+#mousemovetrackdiv .inner-background {background-color:#B2E8FF;border:1px solid #00A8EF;opacity:0.5;position:absolute;width:100%;height:100%;}
 
 #css_theme_tool .viewcssbox {margin:10px;border:1px solid #ddd;background-color:#fff;padding:7px 0;}
 #css_theme_tool .viewcssbox .cssrule {margin:3px 10px;}

@@ -3,10 +3,9 @@
 /**
  * Contains the core class for the CSS theme tool
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->dirroot.'/blocks/css_theme_tool/lib.php');
@@ -51,7 +50,7 @@ class block_css_theme_tool extends block_base {
             $csssupported = true;
             $this->page->requires->css(css_theme_tool::get_cached_file_url($this->context));
         } else {
-            $this->page->requires->js_init_call('M.block_css_theme_tool.init_css_by_js', array(css_theme_tool::get_cached_file_url($this->context)));
+            //$this->page->requires->js_init_call('M.block_css_theme_tool.init_css_by_js', array(css_theme_tool::get_cached_file_url($this->context)));
         }
 
         if (has_capability('block/css_theme_tool:modifystyles', $this->context)) {   // Show the block
@@ -67,7 +66,48 @@ class block_css_theme_tool extends block_base {
                 $this->content->text .= html_writer::tag('div', get_string('cssnotsupported','block_css_theme_tool'), array('class'=>'cssnotsupported'));
             }
 
-            $this->page->requires->strings_for_js(array(
+            $this->initialise_javascript();
+            /*$settings = array(
+                'userid' =>             $USER->id,
+                'fullbodytags' =>       (get_user_preferences('css_theme_tool_full_body_tags',      false)),
+                'autosaveonchange' =>   (get_user_preferences('css_theme_tool_auto_save_changes',   true)),
+                'onlyviewmyrules' =>    (get_user_preferences('css_theme_tool_only_view_my_rules',   false))
+            );
+            $this->page->requires->js_init_call('M.block_css_theme_tool.init', array($this->instance->id, css_theme_tool::get_rules_for_json($settings['onlyviewmyrules']), $settings));*/
+            user_preference_allow_ajax_update('css_theme_tool_full_body_tags',      PARAM_BOOL);
+            user_preference_allow_ajax_update('css_theme_tool_auto_save_changes',   PARAM_BOOL);
+            user_preference_allow_ajax_update('css_theme_tool_only_view_my_rules',  PARAM_BOOL);
+        }
+
+        return $this->content;
+    }
+
+    public function initialise_javascript() {
+        global $USER;
+
+        $currentuseronly = get_user_preferences('css_theme_tool_only_view_my_rules', false);
+        $modules = array(
+            'moodle-block_css_theme_tool-base',
+            'moodle-block_css_theme_tool-colourpicker',
+            'moodle-block_css_theme_tool-cssbuilder',
+            'moodle-block_css_theme_tool-cssviewer',
+            'moodle-block_css_theme_tool-dialogueopacity',
+            'moodle-block_css_theme_tool-dialogueroundedcorners',
+            'moodle-block_css_theme_tool-settings'
+        );
+        $function = 'M.block_css_theme_tool.init';
+        $arguments = array(
+            'instanceid' => $this->instance->id,
+            'css' => css_theme_tool::get_rules_for_json($currentuseronly),
+            'settings' => array(
+                'userid' => $USER->id,
+                'fullbodytags' => (get_user_preferences('css_theme_tool_full_body_tags', false)),
+                'autosaveonchange' => (get_user_preferences('css_theme_tool_auto_save_changes', false)),
+                'onlyviewmyrules' => $currentuseronly
+            )
+        );
+        $this->page->requires->yui_module($modules, $function, array($arguments));
+        $this->page->requires->strings_for_js(array(
                 'savenotification',
                 'cannotfindnode',
                 'errorcapturingclick',
@@ -111,19 +151,6 @@ class block_css_theme_tool extends block_base {
                 'viewthepage',
                 'colourpickertitle'
             ), 'block_css_theme_tool');
-            $settings = array(
-                'userid' =>             $USER->id,
-                'fullbodytags' =>       (get_user_preferences('css_theme_tool_full_body_tags',      false)),
-                'autosaveonchange' =>   (get_user_preferences('css_theme_tool_auto_save_changes',   true)),
-                'onlyviewmyrules' =>    (get_user_preferences('css_theme_tool_only_view_my_rules',   false))
-            );
-            $this->page->requires->js_init_call('M.block_css_theme_tool.init', array($this->instance->id, css_theme_tool::get_rules_for_json($settings['onlyviewmyrules']), $settings));
-            user_preference_allow_ajax_update('css_theme_tool_full_body_tags',      PARAM_BOOL);
-            user_preference_allow_ajax_update('css_theme_tool_auto_save_changes',   PARAM_BOOL);
-            user_preference_allow_ajax_update('css_theme_tool_only_view_my_rules',  PARAM_BOOL);
-        }
-
-        return $this->content;
     }
 
     public function send_file($context, $filearea, $itemid, $filepath, $filename) {

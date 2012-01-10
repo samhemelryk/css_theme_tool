@@ -3,10 +3,9 @@
 /**
  * The file defines the capabilities used for this block
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $capabilities = array(

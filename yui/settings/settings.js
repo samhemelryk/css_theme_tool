@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-dialogue-settings', function(Y) {
+YUI.add('moodle-block_css_theme_tool-settings', function(Y) {
 
 var C = Y.Node.create;
 
@@ -21,7 +21,7 @@ SETTINGS.prototype = {
      */
     shown : false,
     initializer : function(config) {
-        this.themetool = themetool;
+        this.themetool = config.cssthemetool;
         this.init_generate_content();
         Y.one('.block_css_theme_tool input.settingsbutton').removeAttribute('disabled').on('click', this.show, this);
     },
@@ -161,4 +161,4 @@ M.block_css_theme_tool.init_settings = function(config) {
 }
 
 
-}, '@VERSION@', {requires:['moodle-block-css_theme_tool-base']});
+}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});

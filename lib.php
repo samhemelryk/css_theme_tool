@@ -3,10 +3,9 @@
 /**
  * Contains all of the classes used by the CSS theme tool
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
@@ -15,10 +14,9 @@
  * This class is made up mostly of static methods that instantiae itself and do
  * all of the work. This saves on writing code for those who wish to use it.
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class css_theme_tool {
 
@@ -204,10 +202,9 @@ class css_theme_tool {
 /**
  * Class representing a CSS rule
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class css_theme_tool_rule {
 
@@ -295,10 +292,9 @@ class css_theme_tool_rule {
 /**
  * Class representing a style attribute
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class css_theme_tool_style {
     /**

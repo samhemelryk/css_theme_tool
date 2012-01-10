@@ -1,4 +1,4 @@
-YUI.add('moodle-block-css_theme_tool-base', function(Y) {
+YUI.add('moodle-block_css_theme_tool-base', function(Y) {
 
 var CSSTHEMETOOL = function(config) {
     CSSTHEMETOOL.superclass.constructor.apply(this, arguments);
@@ -32,11 +32,6 @@ CSSTHEMETOOL.prototype = {
      */
     explaineddelete : false,
     /**
-     * The block instance ID
-     * @var {int}
-     */
-    instanceid : instanceid,
-    /**
      * Stores the configuration settings for this instance
      * @var {object}
      */
@@ -45,23 +40,23 @@ CSSTHEMETOOL.prototype = {
          * The current users id
          * @var {int}
          */
-        userid : settings.userid | 0,
+        userid : 0,
         /**
          * Set to true if you want the selector to display all options
          * for the body tag. Defaults to false
          * @var {bool}
          */
-        showadvancedbodytags : settings.fullbodytags | false,
+        showadvancedbodytags : false,
         /**
          * Set to true to automatically save all changes
          * @var {bool}
          */
-        autosaveonchange : settings.autosaveonchange | true,
+        autosaveonchange : true,
         /**
          * If set only the current users rules are viewed
          * @var {bool}
          */
-        onlyviewmyrules : settings.onlyviewmyrules | false
+        onlyviewmyrules : false
     },
     /**
      * Stores useful nodes to the tool
@@ -95,12 +90,18 @@ CSSTHEMETOOL.prototype = {
          */
         settingsmanager : null
     },
-    initializer : function() {
+    initializer : function(config) {
+
+        if (config.settings.userid) this.cfg.userid = config.settings.userid;
+        if (config.settings.fullbodytags) this.cfg.showadvancedbodytags = config.settings.fullbodytags;
+        if (config.settings.autosaveonchange) this.cfg.autosaveonchange = config.settings.autosaveonchange;
+        if (config.settings.onlyviewmyrules) this.cfg.onlyviewmyrules = config.settings.onlyviewmyrules;
+
         var bd = Y.one(document.body);
+        var winheight = bd.get('winHeight');
 
         this.publish('cssthemetool:changed');           // Publish the changed event
 
-        var winheight = bd.get('winHeight');
         // Instantiate the overlay
         this.overlay = new Y.Overlay({
             bodyContent : 'temp',
@@ -122,8 +123,8 @@ CSSTHEMETOOL.prototype = {
         this.overlay.bodyNode.addClass('css_builder_overlay');
 
         // Make sure all existing rules are moved into this instance
-        for (var i in existingrules) {
-            var rule = existingrules[i];
+        for (var i in config.css) {
+            var rule = config.css[i];
             var rulestyles = [];
             for (var j in rule.styles) {
                 if (/[^;]$/.test(rule.styles[j].value)) {
@@ -134,11 +135,11 @@ CSSTHEMETOOL.prototype = {
             this.rules.push({selector:rule.selector,styles:rulestyles,user:rule.userid});
         }
         // Instantiate the CSS builder
-        this.components.cssbuilder = new M.block_css_theme_tool.css_builder(Y, this);
+        this.components.cssbuilder = M.block_css_theme_tool.init_css_builder({cssthemetool:this});
         // Instantiate the CSS viewer
-        this.components.cssviewer = new M.block_css_theme_tool.css_viewer(Y, this);
+        this.components.cssviewer = M.block_css_theme_tool.init_css_viewer({cssthemetool:this});
         // Instantiate the settings manager
-        this.components.settingsmanager = new M.block_css_theme_tool.settings_manager(Y, this);
+        this.components.settingsmanager = M.block_css_theme_tool.init_settings({cssthemetool:this});
 
         // Create the style tage and add it to the head of the document
         this.styletag = Y.Node.create('<style type="text/css"></style>');
@@ -331,7 +332,7 @@ CSSTHEMETOOL.prototype = {
     export_css : function() {
         Y.io(M.cfg.wwwroot+'/blocks/css_theme_tool/ajax.php', {
             method : 'POST',
-            data : 'id='+this.instanceid+'&action=exportcss&sesskey='+M.cfg.sesskey,
+            data : 'id='+this.get('instanceid')+'&action=exportcss&sesskey='+M.cfg.sesskey,
             on: {
                 complete:function(transactionid, outcome, args){
                     var popup = window.open(outcome.responseText, 'csstoolexport');
@@ -344,10 +345,10 @@ CSSTHEMETOOL.prototype = {
         });
     }
 }
-Y.extend(CSSTHEMETOOL, Y.Base, TREE.prototype, {
+Y.extend(CSSTHEMETOOL, Y.Base, CSSTHEMETOOL.prototype, {
     NAME : 'css_theme_tool',
     ATTRS : {
-        
+        instanceid : {}
     }
 });
 Y.augment(CSSTHEMETOOL, Y.EventTarget);

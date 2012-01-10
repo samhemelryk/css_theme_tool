@@ -3,11 +3,12 @@
 /**
  * This file processes all of the AJAX actions for the CSS theme tool block
  *
- * @package   blocks
- * @subpackage css_theme_tool
- * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+define('AJAX_SCRIPT', 1);
 
 require_once('../../config.php');
 require_once($CFG->dirroot.'/blocks/css_theme_tool/lib.php');
@@ -26,8 +27,8 @@ if (!isloggedin() || !is_siteadmin()) {
 switch ($action) {
     case 'save':
         // Save the rules that have been created
-        $rules = required_param('rules', PARAM_NOTAGS);
-        $styles = required_param('styles', PARAM_NOTAGS);
+        $rules = required_param_array('rules', PARAM_NOTAGS);
+        $styles = required_param_array('styles', PARAM_NOTAGS);
         css_theme_tool::update_via_ajax($rules, $styles);
         break;
     case 'purge':

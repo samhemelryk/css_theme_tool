@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @package block_css_theme_tool
+ * @copyright 2012 Sam Hemelryk
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // This file keeps track of upgrades to
 // the admin block
 //
@@ -25,5 +31,3 @@ function xmldb_block_css_theme_tool_upgrade($oldversion) {
     $result = true;
     return $result;
 }
-
-
