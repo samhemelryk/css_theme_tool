@@ -5,11 +5,6 @@ var CSSTHEMETOOL = function(config) {
 }
 CSSTHEMETOOL.prototype = {
     /**
-     * Used by all components to display their content nicely
-     * @var {YUI.Overlay}
-     */
-    overlay : null,
-    /**
      * A <style> tag that gets inserted into the head. This is how
      * we can show our live changes
      * @var {Y.Node}
@@ -97,30 +92,7 @@ CSSTHEMETOOL.prototype = {
         if (config.settings.autosaveonchange) this.cfg.autosaveonchange = config.settings.autosaveonchange;
         if (config.settings.onlyviewmyrules) this.cfg.onlyviewmyrules = config.settings.onlyviewmyrules;
 
-        var bd = Y.one(document.body);
-        var winheight = bd.get('winHeight');
-
         this.publish('cssthemetool:changed');           // Publish the changed event
-
-        // Instantiate the overlay
-        this.overlay = new Y.Overlay({
-            bodyContent : 'temp',
-            width: '80%',
-            height : Math.floor(winheight*0.8),
-            visible : false,
-            zIndex : 500,
-            id : 'css_theme_tool'
-        });
-        // Render it on the body (less chance of clipping)
-        this.overlay.render(bd);
-        Y.one('#css_theme_tool').setStyle('position', 'fixed').setStyle('margin', Math.floor(winheight*0.1)+'px 10%');
-        Y.on('windowresize', function(e){
-            var winheight = bd.get('winHeight');
-            this.overlay.set('height', Math.floor(winheight*0.8));
-            Y.one('#css_theme_tool').setStyle('marginTop', Math.floor(winheight*0.1));
-        }, this);
-        // Add our custom class
-        this.overlay.bodyNode.addClass('css_builder_overlay');
 
         // Make sure all existing rules are moved into this instance
         for (var i in config.css) {
@@ -134,17 +106,18 @@ CSSTHEMETOOL.prototype = {
             }
             this.rules.push({selector:rule.selector,styles:rulestyles,user:rule.userid});
         }
-        // Instantiate the CSS builder
-        this.components.cssbuilder = M.block_css_theme_tool.init_css_builder({cssthemetool:this});
-        // Instantiate the CSS viewer
-        this.components.cssviewer = M.block_css_theme_tool.init_css_viewer({cssthemetool:this});
-        // Instantiate the settings manager
-        this.components.settingsmanager = M.block_css_theme_tool.init_settings({cssthemetool:this});
+
+        // Prepare the CSS builder for instantiation
+        this.prepare_component_use(Y.one('.block_css_theme_tool input.addrulebutton').removeAttribute('disabled'), 'cssbuilder', {});
+        // Prepare the CSS viewer for instantiation
+        this.prepare_component_use(Y.one('.block_css_theme_tool input.viewcssbutton').removeAttribute('disabled'), 'cssviewer', {});
+        // Prepare the settings dialogue for instantiation
+        this.prepare_component_use(Y.one('.block_css_theme_tool input.settingsbutton').removeAttribute('disabled'), 'settings', {});
 
         // Create the style tage and add it to the head of the document
         this.styletag = Y.Node.create('<style type="text/css"></style>');
         this.previewtag = Y.Node.create('<style type="text/css"></style>');
-        bd.append(this.styletag).append(this.previewtag);
+        Y.one(document.body).append(this.styletag).append(this.previewtag);
 
         // Process all rules... adds them to the stylesheet we just created
         this.process_rules_to_stylesheet();
@@ -166,6 +139,10 @@ CSSTHEMETOOL.prototype = {
         this.nodes.savechangesbutton = Y.one('.block_css_theme_tool input.savechangesbutton');
         // Attach the save_rules event to the buttons click
         this.nodes.savechangesbutton.on('click', this.save_rules, this);
+        // Hide the savechangesbutton if things get automatically saved
+        if (this.cfg.autosaveonchange) {
+            this.nodes.savechangesbutton.addClass('autosaveenabled');
+        }
         // On a change event for the tool re-enable the button
         this.on('cssthemetool:changed', function(e){
             this.nodes.savechangesbutton.removeAttribute('disabled');
@@ -173,6 +150,18 @@ CSSTHEMETOOL.prototype = {
             if (this.cfg.autosaveonchange) {
                 this.save_rules();
             }
+        }, this);
+    },
+    prepare_component_use : function(el, name, args) {
+        this.components[name] = el.on('click', function(e){
+            e.halt();
+            this.components[name].detach();
+            args.e = e;
+            args.el = el;
+            args.cssthemetool = this;
+            Y.use('moodle-block_css_theme_tool-'+name, function(Y) {
+                args.cssthemetool.components[name] = M.block_css_theme_tool['init_'+name].apply(M.block_css_theme_tool, [args]);
+            });
         }, this);
     },
     /**
@@ -323,7 +312,9 @@ CSSTHEMETOOL.prototype = {
      */
     hide_components : function() {
         for (var i in this.components) {
-            this.components[i].hide();
+            if (this.components[i] && (typeof this.components[i].hide !== 'undefined')) {
+                this.components[i].hide();
+            }
         }
     },
     /**
@@ -364,4 +355,4 @@ M.block_css_theme_tool = {
     }
 }
 
-}, '@VERSION@', {requires:['node','overlay', 'event', 'event-key', 'event-mouseenter', 'io', 'cookie']});
+}, '@VERSION@', {requires:['node', 'event', 'event-key', 'event-mouseenter', 'io']});

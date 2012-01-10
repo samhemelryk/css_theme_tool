@@ -71,6 +71,8 @@ like to know anything more about it please feel free to post in the Moodle forum
 or email me at sam.hemelryk@gmail.com
 
 Visual version guide:
+ 0.3.0
+    - Converted JS to YUI modules and optimised its loading       [CONTRIB-2180]
 
  0.2.2                                                            [CONTRIB-1984]
     - Added a version.php file as it is now required

@@ -13,14 +13,13 @@ require_once($CFG->dirroot.'/blocks/css_theme_tool/lib.php');
 /**
  * Description of block_css_theme_tool
  *
- * @package   blocks
- * @subpackage css_theme_tool
+ * @package block_css_theme_tool
  * @copyright 2010 Sam Hemelryk <sam.hemelryk@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class block_css_theme_tool extends block_base {
 
-    protected $visualversion = '0.2.2';
+    protected $visualversion = '0.3.0';
 
     function init() {
         $this->title = get_string('pluginname', 'block_css_theme_tool');
@@ -54,11 +53,17 @@ class block_css_theme_tool extends block_base {
         }
 
         if (has_capability('block/css_theme_tool:modifystyles', $this->context)) {   // Show the block
+
+            $savebuttonclasses = array('savechangesbutton');
+            if (get_user_preferences('css_theme_tool_auto_save_changes', false)) {
+                $savebuttonclasses[] = 'autosaveenabled';
+            }
+
             $this->content->footer = get_string('version', 'block_css_theme_tool', $this->visualversion);
             $this->content->text .= html_writer::start_tag('div', array('class'=>'options'));
             $this->content->text .= html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('addrule', 'block_css_theme_tool'), 'class'=>'addrulebutton', 'disabled'=>'disabled'));
             $this->content->text .= html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('viewcss', 'block_css_theme_tool'), 'class'=>'viewcssbutton', 'disabled'=>'disabled'));
-            $this->content->text .= html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('savechanges', 'block_css_theme_tool'), 'class'=>'savechangesbutton', 'disabled'=>'disabled'));
+            $this->content->text .= html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('savechanges', 'block_css_theme_tool'), 'class'=>join(' ', $savebuttonclasses), 'disabled'=>'disabled'));
             $this->content->text .= html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('settings'), 'class'=>'settingsbutton', 'disabled'=>'disabled'));
             $this->content->text .= html_writer::end_tag('div');
 
@@ -67,13 +72,7 @@ class block_css_theme_tool extends block_base {
             }
 
             $this->initialise_javascript();
-            /*$settings = array(
-                'userid' =>             $USER->id,
-                'fullbodytags' =>       (get_user_preferences('css_theme_tool_full_body_tags',      false)),
-                'autosaveonchange' =>   (get_user_preferences('css_theme_tool_auto_save_changes',   true)),
-                'onlyviewmyrules' =>    (get_user_preferences('css_theme_tool_only_view_my_rules',   false))
-            );
-            $this->page->requires->js_init_call('M.block_css_theme_tool.init', array($this->instance->id, css_theme_tool::get_rules_for_json($settings['onlyviewmyrules']), $settings));*/
+
             user_preference_allow_ajax_update('css_theme_tool_full_body_tags',      PARAM_BOOL);
             user_preference_allow_ajax_update('css_theme_tool_auto_save_changes',   PARAM_BOOL);
             user_preference_allow_ajax_update('css_theme_tool_only_view_my_rules',  PARAM_BOOL);
@@ -87,13 +86,7 @@ class block_css_theme_tool extends block_base {
 
         $currentuseronly = get_user_preferences('css_theme_tool_only_view_my_rules', false);
         $modules = array(
-            'moodle-block_css_theme_tool-base',
-            'moodle-block_css_theme_tool-colourpicker',
-            'moodle-block_css_theme_tool-cssbuilder',
-            'moodle-block_css_theme_tool-cssviewer',
-            'moodle-block_css_theme_tool-dialogueopacity',
-            'moodle-block_css_theme_tool-dialogueroundedcorners',
-            'moodle-block_css_theme_tool-settings'
+            'moodle-block_css_theme_tool-base'
         );
         $function = 'M.block_css_theme_tool.init';
         $arguments = array(

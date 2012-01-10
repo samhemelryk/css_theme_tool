@@ -20,17 +20,47 @@ CSSVIEWER.prototype = {
      */
     eventcloseoverlay : null,
     /**
-     *
+     * Used by all components to display their content nicely
+     * @var {YUI.Overlay}
+     */
+    overlay : null,
+    /**
+     * Initialise this new object
      */
     initializer : function(config) {
         this.themetool = config.cssthemetool;
+
+        // Prepare the required overlay
+        var bd = Y.one(document.body);
+        var winheight = bd.get('winHeight');
+        // Instantiate the overlay
+        this.overlay = new Y.Overlay({
+            bodyContent : 'temp',
+            width: '80%',
+            height : Math.floor(winheight*0.8),
+            visible : false,
+            zIndex : 500,
+            id : 'cssviewer-overlay'
+        });
+        // Render it on the body (less chance of clipping)
+        this.overlay.render(bd);
+        Y.one('#cssviewer-overlay').addClass('css-theme-tool-overlay').setStyle('position', 'fixed').setStyle('margin', Math.floor(winheight*0.1)+'px 10%');
+        Y.on('windowresize', function(e){
+            var winheight = bd.get('winHeight');
+            this.overlay.set('height', Math.floor(winheight*0.8));
+            Y.one('#cssviewer-overlay').setStyle('marginTop', Math.floor(winheight*0.1));
+        });
+        // Add our custom class
+        this.overlay.bodyNode.addClass('css_builder_overlay');
+
         // Attach the event to display the CSS
-        Y.one('.block_css_theme_tool input.viewcssbutton').removeAttribute('disabled').on('click', this.show, this);
+        config.el.on('click', this.show, this);
+        this.show(config.e);
     },
     /**
      * Shows the CSS viewer component
      */
-    show : function () {
+    show : function (e) {
         // First hide all other components (they may be using the dialogue)
         this.themetool.hide_components();
         // Create the content div for the CSS viewer
@@ -52,10 +82,10 @@ CSSVIEWER.prototype = {
             deleteicon.on('click', this.delete_rule, this, r);
         }
         // Setup the theme tools overlays as we require
-        this.themetool.overlay.set('bodyContent', content);
-        this.themetool.overlay.show();
+        this.overlay.set('bodyContent', content);
+        this.overlay.show();
         // Attach the close event to a click anywhere on the overlay
-        this.eventcloseoverlay = this.themetool.overlay.bodyNode.on('click', this.hide, this);
+        this.eventcloseoverlay = this.overlay.bodyNode.on('click', this.hide, this);
         this.shown = true;
     },
     /**
@@ -64,7 +94,7 @@ CSSVIEWER.prototype = {
     hide : function () {
         if (this.shown) {
             this.eventcloseoverlay.detach();
-            this.themetool.overlay.hide();
+            this.overlay.hide();
             this.shown = false;
         }
     },
@@ -96,8 +126,8 @@ Y.extend(CSSVIEWER, Y.Base, CSSVIEWER.prototype, {
 });
 Y.augment(CSSVIEWER, Y.EventTarget);
 
-M.block_css_theme_tool.init_css_viewer = function(config) {
+M.block_css_theme_tool.init_cssviewer = function(config) {
     return new CSSVIEWER(config);
 }
 
-}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});
+}, '@VERSION@', {requires:['overlay', 'moodle-block_css_theme_tool-base']});

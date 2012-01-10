@@ -9,7 +9,7 @@ OPACITY.prototype = {
         this.cssbuilder = config.cssbuilder;
         config.button.on('click', this.show, this);
     },
-    show : function() {
+    show : function(e) {
         var opacity = prompt(M.str.block_css_theme_tool.opacityprompt);
         opacity = opacity.replace(/^0?\./, '');
         opacity = opacity.replace(/\%$/, '');

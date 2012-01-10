@@ -277,4 +277,4 @@ M.block_css_theme_tool.init_colour_picker = function(config) {
 M.block_css_theme_tool.previouscolours = [];
 
 
-}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});
+}, '@VERSION@', {requires:['cookie', 'moodle-block_css_theme_tool-base']});

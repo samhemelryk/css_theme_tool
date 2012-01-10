@@ -48,9 +48,44 @@ CSSBUILDER.prototype = {
      * An array of components currently initialised
      */
     components : [],
+    /**
+     * Bool when set to true everything needed has been set up.
+     */
+    allreadytogo : false,
+    /**
+     * Used by all components to display their content nicely
+     * @var {YUI.Overlay}
+     */
+    overlay : null,
+    /**
+     * Initialises the new css builder object
+     */
     initializer : function(config) {
         // Store the arguments
         this.themetool = config.cssthemetool;
+
+        var bd = Y.one(document.body);
+        var winheight = bd.get('winHeight');
+        // Instantiate the overlay
+        this.overlay = new Y.Overlay({
+            bodyContent : 'temp',
+            width: '80%',
+            height : Math.floor(winheight*0.8),
+            visible : false,
+            zIndex : 500,
+            id : 'cssbuilder-overlay'
+        });
+        // Render it on the body (less chance of clipping)
+        this.overlay.render(bd);
+        Y.one('#cssbuilder-overlay').addClass('css-theme-tool-overlay').setStyle('position', 'fixed').setStyle('margin', Math.floor(winheight*0.1)+'px 10%');
+        Y.on('windowresize', function(e){
+            var winheight = bd.get('winHeight');
+            this.overlay.set('height', Math.floor(winheight*0.8));
+            Y.one('#cssbuilder-overlay').setStyle('marginTop', Math.floor(winheight*0.1));
+        }, this);
+        // Add our custom class
+        this.overlay.bodyNode.addClass('css_builder_overlay');
+
         // Create the mask. This will be used to capture click events
         this.mask = new Y.Overlay({
             bodyContent : ' ',
@@ -71,16 +106,15 @@ CSSBUILDER.prototype = {
             // Has to be fixed we don't want it to move or grow
             modal.setStyle('position', 'fixed');
         }
-        // Generate the core content to increase reponse time during mouse events and
-        // display calls
-        this.init_generate_controls();
         // Enable the addrule button and attach the click event
-        Y.one('.block_css_theme_tool input.addrulebutton').removeAttribute('disabled').on('click', this.capture_next_click, this)
+        config.el.on('click', this.capture_next_click, this);
+        this.capture_next_click(config.e);
     },
     /**
      * When called this sets the component up to capture the next click to add a rule
      */
     capture_next_click : function() {
+        this.init_generate_controls();
         // Hide all components, I don't want people to style them ;)
         this.themetool.hide_components();
         // Show the mask
@@ -195,7 +229,7 @@ CSSBUILDER.prototype = {
         }
         var selector = this.get_selected_selector();
         var styles = [];
-        this.themetool.overlay.bodyNode.all('.style_definitions .styleattribute').each(function(){
+        this.overlay.bodyNode.all('.style_definitions .styleattribute').each(function(){
             styles.push(this.get('innerHTML'));
         });
         this.themetool.previewtag.setContent(selector+' {'+styles.join('')+'}');
@@ -205,6 +239,9 @@ CSSBUILDER.prototype = {
      * percieved performance when using the tool!
      */
     init_generate_controls : function() {
+        if (this.allreadytogo) {
+            return true;
+        }
         if (this.controlsnode == null) {
             // Some aliases
             var create = Y.Node.create;
@@ -234,33 +271,33 @@ CSSBUILDER.prototype = {
             buttons.one('#cancelnewstyle').on('click', this.hide, this);
             buttons.one('#highlightaffectedcells').on('mousedown', function() {
                 this.highlight_affected_cells();
-                this.themetool.overlay.bodyNode.setStyle('opacity', 0.2);
+                this.overlay.bodyNode.setStyle('opacity', 0.2);
             }, this);
             buttons.one('#highlightaffectedcells').on('mouseup', function(){
-                this.themetool.overlay.bodyNode.setStyle('opacity', 1.0);
+                this.overlay.bodyNode.setStyle('opacity', 1.0);
                 Y.all('.cssbuilder_highlight_container').remove();
             }, this);
             buttons.one('#previewaffectedcells').on('mousedown', function(){
                 this.preview_affected_cells();
-                this.themetool.overlay.bodyNode.setStyle('opacity', 0.2);
+                this.overlay.bodyNode.setStyle('opacity', 0.2);
             }, this);
             buttons.one('#previewaffectedcells').on('mouseup', function(){
-                this.themetool.overlay.bodyNode.setStyle('opacity', 1.0);
+                this.overlay.bodyNode.setStyle('opacity', 1.0);
                 this.themetool.previewtag.setContent('');
             }, this);
             buttons.one('#viewthepage').on('mousedown', function(){
                 this.setStyle('opacity', 0.2);
-            }, this.themetool.overlay.bodyNode);
+            }, this.overlay.bodyNode);
             buttons.one('#viewthepage').on('mouseup', function(){
                 this.setStyle('opacity', 1.0);
-            }, this.themetool.overlay.bodyNode);
+            }, this.overlay.bodyNode);
             controls.append(buttons);
 
             // Wiring control structure
-            this.components['colour'] = M.block_css_theme_tool.init_colour_picker({cssbuilder:this, button:controls.one('.control.colourpicker'), cssstyle:'color'});
-            this.components['backgroundcolor'] = M.block_css_theme_tool.init_colour_picker({cssbuilder:this, button:controls.one('.control.backgroundcolourpicker'), cssstyle:'background-color'});
-            this.components['roundedcorners'] = M.block_css_theme_tool.init_rounded_corners({cssbuilder:this, button:controls.one('.control.roundedcorners')});
-            this.components['opacity'] = M.block_css_theme_tool.init_dialogue_opacity({cssbuilder:this, button:controls.one('.control.opacity')});
+            this.prepare_component_use(controls.one('.control.colourpicker'), 'color', 'moodle-block_css_theme_tool-colourpicker', 'init_colour_picker', [{cssbuilder:this, button:controls.one('.control.colourpicker'), cssstyle:'color'}]);
+            this.prepare_component_use(controls.one('.control.backgroundcolourpicker'), 'backgroundcolor', 'moodle-block_css_theme_tool-colourpicker', 'init_colour_picker', [{cssbuilder:this, button:controls.one('.control.backgroundcolourpicker'), cssstyle:'background-color'}]);
+            this.prepare_component_use(controls.one('.control.roundedcorners'), 'roundedcorners', 'moodle-block_css_theme_tool-dialogueroundedcorners', 'init_rounded_corners', [{cssbuilder:this, button:controls.one('.control.roundedcorners')}]);
+            this.prepare_component_use(controls.one('.control.opacity'), 'opacity', 'moodle-block_css_theme_tool-dialogueopacity', 'init_dialogue_opacity', [{cssbuilder:this, button:controls.one('.control.opacity')}]);
             
             this.components['bold'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.bold'), cssstyle:'font-weight: bold;'});
             this.components['italic'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.italic'), cssstyle:'font-style: italic;'});
@@ -271,7 +308,19 @@ CSSBUILDER.prototype = {
 
             this.controlsnode = controls;
         }
+        this.allreadytogo = true;
         return this.controlsnode
+    },
+    prepare_component_use : function(el, name, module, callback, args) {
+        this.components[name] = el.on('click', function(e){
+            e.halt();
+            this.components[name].detach();
+            var self = this;
+            Y.use(module, function(Y) {
+                self.components[name] = M.block_css_theme_tool[callback].apply(M.block_css_theme_tool, args);
+                self.components[name].show(e);
+            });
+        }, this);
     },
     /**
      * Show the CSS builder component
@@ -311,10 +360,10 @@ CSSBUILDER.prototype = {
         content.append(this.controlsnode);
 
         // Sets up the themetool overlay
-        this.themetool.overlay.set('bodyContent', content);
-        this.themetool.overlay.show();
+        this.overlay.set('bodyContent', content);
+        this.overlay.show();
         // Attaches an update event to EVERY seletor shown in the compontent
-        this.themetool.overlay.bodyNode.all('.tagselectorbox input.tagselector').on('click', this.update, this);
+        this.overlay.bodyNode.all('.tagselectorbox input.tagselector').on('click', this.update, this);
         // Update it node anyway
         this.update();
         this.shown = true;
@@ -325,8 +374,8 @@ CSSBUILDER.prototype = {
     hide : function() {
         if (this.shown) {
             this.themetool.previewtag.setContent('');
-            this.themetool.overlay.set('bodyContent', '');
-            this.themetool.overlay.hide();
+            this.overlay.set('bodyContent', '');
+            this.overlay.hide();
             this.shown = false;
         }
     },
@@ -429,7 +478,7 @@ CSSBUILDER.prototype = {
      */
     add_style : function(e) {
         // Get the definitions UL
-        var ul = this.themetool.overlay.bodyNode.one('.style_definitions');
+        var ul = this.overlay.bodyNode.one('.style_definitions');
         // Gets the new style li
         var addnewstyle = ul.one('.addnewstyle').ancestor('li');
         // Hide it :)
@@ -494,7 +543,7 @@ CSSBUILDER.prototype = {
 
         var selector = this.get_selected_selector();
         var styles = [];
-        this.themetool.overlay.bodyNode.all('.style_definitions .styleattribute').each(function(){
+        this.overlay.bodyNode.all('.style_definitions .styleattribute').each(function(){
             styles.push(this.get('innerHTML'));
         });
         if (this.themetool.add_rule(selector, styles)) {
@@ -508,9 +557,9 @@ CSSBUILDER.prototype = {
      * the user has selected
      */
     update : function() {
-        if (this.themetool.overlay.bodyNode.all('.addnewstyle').size()<1) {
+        if (this.overlay.bodyNode.all('.addnewstyle').size()<1) {
             var li = Y.Node.create('<li><span class="addnewstyle">'+M.str.block_css_theme_tool.addnewstyle+'</span></li>');
-            this.themetool.overlay.bodyNode.one('.css_current_selector .style_definitions').append(li);
+            this.overlay.bodyNode.one('.css_current_selector .style_definitions').append(li);
             li.on('click', this.add_style, this);
         }
 
@@ -527,9 +576,9 @@ CSSBUILDER.prototype = {
             selectors.push(selectorsinbox.join(''));
             rawselectors.push(rawselectorsinbox.join(''))
         }
-        this.themetool.overlay.bodyNode.one('.css_current_selector .selectorcontainer').set('innerHTML', selectors.join(' '));
+        this.overlay.bodyNode.one('.css_current_selector .selectorcontainer').set('innerHTML', selectors.join(' '));
 
-        var l = this.themetool.overlay.bodyNode.one('.style_definitions .addnewstyle').ancestor('li');
+        var l = this.overlay.bodyNode.one('.style_definitions .addnewstyle').ancestor('li');
         var ul = l.ancestor('ul');
         ul.all('.styleattribute.predefined').each(function(){
             this.ancestor('li').remove();
@@ -585,7 +634,7 @@ CSSBUILDER.prototype = {
      */
     get_selected_selectors : function() {
         var selectors = [];
-        this.themetool.overlay.bodyNode.all('.tagselectorbox').each(function(box) {
+        this.overlay.bodyNode.all('.tagselectorbox').each(function(box) {
             var selectorsinbox = [];
             box.all('input.tagselector').each(function(checkbox){
                 checkbox.ancestor().removeClass('isselected');
@@ -670,8 +719,8 @@ Y.extend(ADDSYTLEBUTTON, Y.Base, ADDSYTLEBUTTON.prototype, {
 
 
 
-M.block_css_theme_tool.init_css_builder = function(config) {
+M.block_css_theme_tool.init_cssbuilder = function(config) {
     return new CSSBUILDER(config);
 }
 
-}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});
+}, '@VERSION@', {requires:['overlay', 'moodle-block_css_theme_tool-base']});

@@ -22,8 +22,34 @@ SETTINGS.prototype = {
     shown : false,
     initializer : function(config) {
         this.themetool = config.cssthemetool;
+        this.init_overlay();
         this.init_generate_content();
-        Y.one('.block_css_theme_tool input.settingsbutton').removeAttribute('disabled').on('click', this.show, this);
+        config.el.on('click', this.show, this);
+        this.show(config.e);
+    },
+    init_overlay : function() {
+        // Prepare the required overlay
+        var bd = Y.one(document.body);
+        var winheight = bd.get('winHeight');
+        // Instantiate the overlay
+        this.overlay = new Y.Overlay({
+            bodyContent : 'temp',
+            width: '80%',
+            height : Math.floor(winheight*0.8),
+            visible : false,
+            zIndex : 500,
+            id : 'settings-overlay'
+        });
+        // Render it on the body (less chance of clipping)
+        this.overlay.render(bd);
+        Y.one('#settings-overlay').addClass('css-theme-tool-overlay').setStyle('position', 'fixed').setStyle('margin', Math.floor(winheight*0.1)+'px 10%');
+        Y.on('windowresize', function(e){
+            var winheight = bd.get('winHeight');
+            this.overlay.set('height', Math.floor(winheight*0.8));
+            Y.one('#settings-overlay').setStyle('marginTop', Math.floor(winheight*0.1));
+        });
+        // Add our custom class
+        this.overlay.bodyNode.addClass('css_builder_overlay');
     },
     init_generate_content : function() {
         var div = C('<div class="settingscontainer"><h2>Settings</h2></div>');
@@ -100,8 +126,8 @@ SETTINGS.prototype = {
      */
     show : function() {
         this.themetool.hide_components();
-        this.themetool.overlay.set('bodyContent', this.content);
-        this.themetool.overlay.show();
+        this.overlay.set('bodyContent', this.content);
+        this.overlay.show();
         this.shown = true;
     },
     /**
@@ -109,7 +135,7 @@ SETTINGS.prototype = {
      */
     hide : function() {
         if (this.shown) {
-            this.themetool.overlay.hide();
+            this.overlay.hide();
             this.shown = false;
         }
     },
@@ -130,7 +156,10 @@ SETTINGS.prototype = {
     toggle_autosaveonchange : function(e, checkbox) {
         this.themetool.cfg.autosaveonchange = (checkbox.get('checked'))?true:false;
         if (this.themetool.cfg.autosaveonchange) {
+            this.themetool.nodes.savechangesbutton.addClass('autosaveenabled');
             this.themetool.save_rules();
+        } else {
+            this.themetool.nodes.savechangesbutton.removeClass('autosaveenabled');
         }
         M.util.set_user_preference('css_theme_tool_auto_save_changes', this.themetool.cfg.autosaveonchange);
     },
@@ -161,4 +190,4 @@ M.block_css_theme_tool.init_settings = function(config) {
 }
 
 
-}, '@VERSION@', {requires:['moodle-block_css_theme_tool-base']});
+}, '@VERSION@', {requires:['overlay', 'moodle-block_css_theme_tool-base']});
