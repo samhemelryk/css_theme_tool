@@ -22,6 +22,7 @@ $string['cannotfindnode'] = 'Unable to find the element of the rule you wish to 
 $string['close'] = 'Close';
 $string['colourpickertitle'] = 'CSS theme tool: Colour picker';
 $string['cssnotsupported'] = 'Your theme does not support the use of external CSS from this tool.<hr />Only Admin users will be able to see the rules you make.';
+$string['css_theme_tool:modifystyles'] = 'Modifies CSS within Moodle on the fly.';
 $string['errorcapturingclick'] = 'Error capturing click: ';
 $string['exportcss'] = 'Export CSS file';
 $string['exportcssdesc'] = 'This will export the CSS rules you have created as a CSS file that you can add into any theme you choose.';
