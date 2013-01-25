@@ -20,5 +20,16 @@ $capabilities = array(
             'guest' => CAP_PROHIBIT,
             'manager' => CAP_ALLOW
         )
+    ),
+
+    // New standard capability 'addinstance'.
+    'block/css_theme_tool:addinstance' => array(
+        'captype'       => 'write',
+        'contextlevel'  => CONTEXT_COURSE,
+        'archetypes'    => array(
+            'editingteacher'    => CAP_ALLOW,
+            'manager'           => CAP_ALLOW
+        ),
+        'clonepermissionsfrom'  => 'moodle/site:manageblocks'
     )
 );
