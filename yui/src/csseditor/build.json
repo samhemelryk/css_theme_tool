@@ -1,0 +1,10 @@
+{
+    "name": "moodle-block_css_theme_tool-csseditor",
+    "builds": {
+        "moodle-block_css_theme_tool-csseditor": {
+            "jsfiles": [
+                "navigation.js"
+            ]
+        }
+    }
+}
