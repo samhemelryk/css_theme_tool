@@ -3,7 +3,37 @@
     "builds": {
         "moodle-block_css_theme_tool-csseditor": {
             "jsfiles": [
-                "navigation.js"
+                "csseditor.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-colourpicker": {
+            "jsfiles": [
+                "colourpicker.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-cssbuilder": {
+            "jsfiles": [
+                "cssbuilder.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-cssviewer": {
+            "jsfiles": [
+                "cssviewer.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-dialogueopacity": {
+            "jsfiles": [
+                "dialogueopacity.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-dialogueroundedcorners": {
+            "jsfiles": [
+                "dialogueroundedcorners.js"
+            ]
+        },
+        "moodle-block_css_theme_tool-csseditor-settings": {
+            "jsfiles": [
+                "settings.js"
             ]
         }
     }

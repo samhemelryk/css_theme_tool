@@ -84,7 +84,7 @@ class block_css_theme_tool extends block_base {
 
         $currentuseronly = get_user_preferences('css_theme_tool_only_view_my_rules', false);
         $modules = array(
-            'moodle-block_css_theme_tool-base'
+            'moodle-block_css_theme_tool-csseditor'
         );
         $function = 'M.block_css_theme_tool.init';
         $arguments = array(
@@ -99,49 +99,49 @@ class block_css_theme_tool extends block_base {
         );
         $this->page->requires->yui_module($modules, $function, array($arguments));
         $this->page->requires->strings_for_js(array(
-                'savenotification',
-                'cannotfindnode',
-                'errorcapturingclick',
-                'highlight',
-                'save',
-                'cancel',
-                'addnewstyle',
-                'purgerules',
-                'purgerulesdesc',
-                'purgerulesconfirm',
-                'purgerulescomplete',
-                'close',
-                'exportcss',
-                'exportcssdesc',
-                'exporttheme',
-                'exportthemedesc',
-                'showadvancedbodytags',
-                'showadvancedbodytagsdesc',
-                'opacityprompt',
-                'roundedcorners',
-                'postopleft',
-                'postopright',
-                'posbottomleft',
-                'posbottomright',
-                'set',
-                'fontcolour',
-                'backgroundcolour',
-                'bold',
-                'italic',
-                'underline',
-                'alignleft',
-                'aligncenter',
-                'alignright',
-                'roundedcorners',
-                'opacity',
-                'autosaveonchange',
-                'autosaveonchangedesc',
-                'onlyviewmyrules',
-                'onlyviewmyrulesdesc',
-                'preview',
-                'viewthepage',
-                'colourpickertitle'
-            ), 'block_css_theme_tool');
+            'savenotification',
+            'cannotfindnode',
+            'errorcapturingclick',
+            'highlight',
+            'save',
+            'cancel',
+            'addnewstyle',
+            'purgerules',
+            'purgerulesdesc',
+            'purgerulesconfirm',
+            'purgerulescomplete',
+            'close',
+            'exportcss',
+            'exportcssdesc',
+            'exporttheme',
+            'exportthemedesc',
+            'showadvancedbodytags',
+            'showadvancedbodytagsdesc',
+            'opacityprompt',
+            'roundedcorners',
+            'postopleft',
+            'postopright',
+            'posbottomleft',
+            'posbottomright',
+            'set',
+            'fontcolour',
+            'backgroundcolour',
+            'bold',
+            'italic',
+            'underline',
+            'alignleft',
+            'aligncenter',
+            'alignright',
+            'roundedcorners',
+            'opacity',
+            'autosaveonchange',
+            'autosaveonchangedesc',
+            'onlyviewmyrules',
+            'onlyviewmyrulesdesc',
+            'preview',
+            'viewthepage',
+            'colourpickertitle'
+        ), 'block_css_theme_tool');
     }
 
     public function send_file($context, $filearea, $itemid, $filepath, $filename) {

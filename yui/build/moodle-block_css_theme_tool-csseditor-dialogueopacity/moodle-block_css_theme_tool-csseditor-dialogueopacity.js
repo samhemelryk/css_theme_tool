@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-dialogueopacity', function (Y, NAME) {
+
 var OPACITY = function(config) {
     OPACITY.superclass.constructor.apply(this, arguments);
 };
@@ -30,3 +32,5 @@ Y.augment(OPACITY, Y.EventTarget);
 M.block_css_theme_tool.init_dialogue_opacity = function(config) {
     return new OPACITY(config);
 };
+
+}, '@VERSION@', {"requires": ["moodle-block_css_theme_tool-csseditor"]});

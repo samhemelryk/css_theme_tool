@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-dialogueroundedcorners', function (Y, NAME) {
+
 var ROUNDEDCORNERS = function(config) {
     ROUNDEDCORNERS.superclass.constructor.apply(this, arguments);
 };
@@ -121,3 +123,5 @@ Y.augment(ROUNDEDCORNERS, Y.EventTarget);
 M.block_css_theme_tool.init_rounded_corners = function(config) {
     return new ROUNDEDCORNERS(config);
 };
+
+}, '@VERSION@', {"requires": ["moodle-block_css_theme_tool-csseditor", "overlay"]});

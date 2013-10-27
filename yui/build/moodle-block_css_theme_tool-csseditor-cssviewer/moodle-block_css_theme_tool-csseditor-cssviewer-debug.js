@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-cssviewer', function (Y, NAME) {
+
 var CSSVIEWER = function(config) {
     CSSVIEWER.superclass.constructor.apply(this, arguments);
 };
@@ -127,3 +129,5 @@ Y.augment(CSSVIEWER, Y.EventTarget);
 M.block_css_theme_tool.init_cssviewer = function(config) {
     return new CSSVIEWER(config);
 };
+
+}, '@VERSION@', {"requires": ["moodle-block_css_theme_tool-csseditor", "overlay"]});

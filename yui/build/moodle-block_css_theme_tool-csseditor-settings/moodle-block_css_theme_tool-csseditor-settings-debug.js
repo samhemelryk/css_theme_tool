@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-settings', function (Y, NAME) {
+
 var C = Y.Node.create;
 
 var SETTINGS = function(config) {
@@ -186,3 +188,5 @@ Y.augment(SETTINGS, Y.EventTarget);
 M.block_css_theme_tool.init_settings = function(config) {
     return new SETTINGS(config);
 };
+
+}, '@VERSION@');

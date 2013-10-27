@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-cssbuilder', function (Y, NAME) {
+
 var CSSBUILDER = function(config) {
     CSSBUILDER.superclass.constructor.apply(this, arguments);
 };
@@ -715,3 +717,5 @@ Y.extend(ADDSYTLEBUTTON, Y.Base, ADDSYTLEBUTTON.prototype, {
 M.block_css_theme_tool.init_cssbuilder = function(config) {
     return new CSSBUILDER(config);
 };
+
+}, '@VERSION@', {"requires": ["moodle-block_css_theme_tool-csseditor", "overlay"]});

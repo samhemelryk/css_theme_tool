@@ -1,9 +1,7 @@
-YUI.add('moodle-block_css_theme_tool-base', function(Y) {
-
-var CSSTHEMETOOL = function(config) {
-    CSSTHEMETOOL.superclass.constructor.apply(this, arguments);
-}
-CSSTHEMETOOL.prototype = {
+var CSSEDITOR = function(config) {
+    CSSEDITOR.superclass.constructor.apply(this, arguments);
+};
+CSSEDITOR.prototype = {
     /**
      * A <style> tag that gets inserted into the head. This is how
      * we can show our live changes
@@ -159,7 +157,7 @@ CSSTHEMETOOL.prototype = {
             args.e = e;
             args.el = el;
             args.cssthemetool = this;
-            Y.use('moodle-block_css_theme_tool-'+name, function(Y) {
+            Y.use('moodle-block_css_theme_tool-csseditor-'+name, function(Y) {
                 args.cssthemetool.components[name] = M.block_css_theme_tool['init_'+name].apply(M.block_css_theme_tool, [args]);
             });
         }, this);
@@ -336,23 +334,21 @@ CSSTHEMETOOL.prototype = {
         });
     }
 }
-Y.extend(CSSTHEMETOOL, Y.Base, CSSTHEMETOOL.prototype, {
-    NAME : 'css_theme_tool',
+Y.extend(CSSEDITOR, Y.Base, CSSEDITOR.prototype, {
+    NAME : 'moodle-block_css_theme_tool-csseditor',
     ATTRS : {
         instanceid : {}
     }
 });
-Y.augment(CSSTHEMETOOL, Y.EventTarget);
+Y.augment(CSSEDITOR, Y.EventTarget);
 
 M.block_css_theme_tool = {
     instance : null,
     init : function(config) {
-        this.instance = new CSSTHEMETOOL(config);
+        this.instance = new CSSEDITOR(config);
     },
     init_css_by_js : function(Y, url) {
         this.existingstylesheet = Y.Node.create('<link type="text/css" rel="stylesheet" href="'+url+'"></link>');
         Y.one('head').append(this.existingstylesheet);
     }
-}
-
-}, '@VERSION@', {requires:['node', 'event', 'event-key', 'event-mouseenter', 'io']});
+};

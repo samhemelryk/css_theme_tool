@@ -1,3 +1,5 @@
+YUI.add('moodle-block_css_theme_tool-csseditor-colourpicker', function (Y, NAME) {
+
 var COLOURPICKER = function(config) {
     COLOURPICKER.superclass.constructor.apply(this, arguments);
 };
@@ -273,3 +275,5 @@ M.block_css_theme_tool.init_colour_picker = function(config) {
     return new COLOURPICKER(config);
 };
 M.block_css_theme_tool.previouscolours = [];
+
+}, '@VERSION@', {"requires": ["moodle-block_css_theme_tool-csseditor", "cookie"]});
