@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define('AJAX_SCRIPT', 1);
+define('AJAX_SCRIPT', true);
 
 require_once('../../config.php');
 require_once($CFG->dirroot.'/blocks/css_theme_tool/lib.php');
@@ -31,15 +31,17 @@ switch ($action) {
         $styles = required_param_array('styles', PARAM_NOTAGS);
         css_theme_tool::update_via_ajax($rules, $styles);
         break;
+
     case 'purge':
         // Purge the rules in the database
         css_theme_tool::purge_rules();
         break;
+
     case 'exportcss':
         // Export the CSS
         $blockid = required_param('id', PARAM_INT);
         $blockinstance = $DB->get_record('block_instances', array('id'=>$blockid), '*', MUST_EXIST);
-        $blockcontext = get_context_instance(CONTEXT_BLOCK, $blockinstance->id);
+        $blockcontext = context_block::instance($blockinstance->id);
         css_theme_tool::cache_css($blockcontext);
         $filepath = css_theme_tool::get_cached_file_url($blockcontext);
         echo $filepath;

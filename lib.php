@@ -50,15 +50,15 @@ class css_theme_tool {
     }
 
     /**
-     * Gets all of the rules for this css theme tool and returns them in
-     * an array suitable for return as JSON
+     * Gets all of the rules for this css theme tool and returns them in an array suitable for return as JSON.
+     *
      * @return array
      */
     public static function get_rules_for_json($currentuseronly=false) {
         global $USER;
         $tool = new self();
         $rules = $tool->get_rules();
-        foreach ($rules as $key=>&$rule) {
+        foreach ($rules as $key => &$rule) {
             if ($currentuseronly && $rule->userid != $USER->id) {
                 unset($rules[$key]);
                 continue;
@@ -105,13 +105,14 @@ class css_theme_tool {
     }
 
     /**
-     * Caches the CSS and returns the file so it can be used
+     * Caches the CSS and returns the file so it can be used.
+     *
      * @return stored_file
      */
     public static function cache_css($blockcontext) {
         $tool = new self();
         $rules = $tool->get_rules();
-        $css = "/** Created by CSS theme tool **/\n";
+        $css = "/** Created by the CSS theme tool block **/\n";
         foreach ($rules as $rule) {
             $css .= $rule->selector.' {';
             foreach ($rule->styles as $style) {
@@ -121,14 +122,15 @@ class css_theme_tool {
         }
 
         $cssfile = array(
-            'contextid'=>$blockcontext->id,
+            'contextid' => $blockcontext->id,
             'component' => 'block_css_theme_tool',
-            'filearea'=>'cached_css',
-            'itemid'=>0,
-            'filepath'=>'/',
-            'filename'=>'css_theme_tool_export.css',
-            'timecreated'=>time(),
-            'timemodified'=>time());
+            'filearea' => 'cached_css',
+            'itemid' => 0,
+            'filepath' => '/',
+            'filename' => 'css_theme_tool_export.css',
+            'timecreated' => time(),
+            'timemodified' => time()
+        );
         $fs = get_file_storage();
         if ($file = $fs->get_file($cssfile['contextid'], $cssfile['component'], $cssfile['filearea'], $cssfile['itemid'], $cssfile['filepath'], $cssfile['filename'])) {
             $file->delete();
@@ -140,7 +142,7 @@ class css_theme_tool {
      * Updates the rules stored in the database with those you have created
      *
      * @global moodle_database $DB
-     * @param array $rules
+     * @param css_theme_tool_rule[] $rules
      */
     public function update_rules($rules) {
         global $DB;
@@ -179,7 +181,7 @@ class css_theme_tool {
      */
     public static function update_via_ajax($ajaxrules, $ajaxstyles) {
         $rules = array();
-        foreach ($ajaxrules as $key=>$selector) {
+        foreach ($ajaxrules as $key => $selector) {
             $rule = new css_theme_tool_rule();
             $rule->create($selector, explode('@@@', $ajaxstyles[$key]));
             $rules[] = $rule;
@@ -213,21 +215,25 @@ class css_theme_tool_rule {
      * @var int
      */
     public $id = null;
+
     /**
      * The selector as a string
      * @var string
      */
     public $selector;
+
     /**
      * The time this rule was last modified
      * @var int
      */
     public $timemodified;
+
     /**
      * The ID of the user who created this rule
      * @var int
      */
     public $userid;
+
     /**
      * All of the styles associated with this object {@see css_theme_tool_style}
      * @var array
@@ -243,7 +249,7 @@ class css_theme_tool_rule {
      * @param array $styles
      * @return bool
      */
-    public function load($id, stdClass $rule=null, array $styles = null) {
+    public function load($id, stdClass $rule = null, array $styles = null) {
         global $DB;
         if ($rule == null) {
             $rule = $DB->get_record('block_css_theme_tool', array('id'=>$id), '*', MUST_EXIST);
@@ -255,6 +261,7 @@ class css_theme_tool_rule {
         $this->styles = css_theme_tool_style::load_for_rule($this, $styles);
         return true;
     }
+
     /**
      * Creates this object from the given selector and rules
      * @param string $selector
@@ -268,6 +275,7 @@ class css_theme_tool_rule {
         $this->userid = $USER->id;
         $this->styles = css_theme_tool_style::create_for_rule($this, $styles);
     }
+
     /**
      * Inserts or Updates the rule in the database
      * @global moodle_database $DB
@@ -281,7 +289,7 @@ class css_theme_tool_rule {
             $this->id = $DB->insert_record('block_css_theme_tool', $this);
         }
 
-        $DB->delete_records('block_css_theme_tool_styles', array('ruleid'=>$this->id));
+        $DB->delete_records('block_css_theme_tool_styles', array('ruleid' => $this->id));
         foreach ($this->styles as $style) {
             $style->ruleid = $this->id;
             $style->save();
@@ -302,21 +310,25 @@ class css_theme_tool_style {
      * @var int
      */
     public $id;
+
     /**
      * The ID of the rule this style belongs too
      * @var int
      */
     public $ruleid;
+
     /**
      * The rule this style belongs too
      * @var css_theme_tool_rule
      */
     public $rule;
+
     /**
      * The name of this style
      * @var string
      */
     public $name;
+
     /**
      * The value for this style
      * @var string
@@ -331,7 +343,7 @@ class css_theme_tool_style {
      * @param array $dbstyles
      * @return array
      */
-    public static function load_for_rule(css_theme_tool_rule $rule, array $dbstyles=null) {
+    public static function load_for_rule(css_theme_tool_rule $rule, array $dbstyles = null) {
         global $DB;
         $styles = Array();
         if ($dbstyles == null) {
@@ -405,8 +417,6 @@ function block_css_theme_tool_pluginfile($course, $birecord, $context, $filearea
     }
 
     $fs = get_file_storage();
-
-
     $filename = array_pop($args);
     $itemid = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
@@ -415,6 +425,7 @@ function block_css_theme_tool_pluginfile($course, $birecord, $context, $filearea
         send_file_not_found();
     }
 
-    session_get_instance()->write_close();
+    $session = new \core\session\manager();
+    $session->write_close(); // unlock session during file serving.
     send_stored_file($file, 60*60, 0, $forcedownload);
 }

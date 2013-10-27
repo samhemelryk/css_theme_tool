@@ -19,23 +19,21 @@ require_once($CFG->dirroot.'/blocks/css_theme_tool/lib.php');
  */
 class block_css_theme_tool extends block_base {
 
-    protected $visualversion = '0.3.0';
+    protected $visualversion = '0.4.0';
 
-    function init() {
+    public function init() {
         $this->title = get_string('pluginname', 'block_css_theme_tool');
     }
 
-    function applicable_formats() {
+    public function applicable_formats() {
         return array('all' => true);
     }
 
-    function instance_allow_multiple() {
+    public function instance_allow_multiple() {
         return false;
     }
 
-    function get_content() {
-        global $USER;
-
+    public function get_content() {
         if ($this->content !== NULL) {
             return $this->content;
         }
@@ -148,9 +146,10 @@ class block_css_theme_tool extends block_base {
 
     public function send_file($context, $filearea, $itemid, $filepath, $filename) {
         $fs = get_file_storage();
-        $file = $fs->get_file($context->id, $filearea, $itemid, $filepath, $filename);
+        $file = $fs->get_file($context->id, 'block_css_theme_tool', $filearea, $itemid, $filepath, $filename);
         if ($file) {
-            session_get_instance()->write_close(); // unlock session during fileserving
+            $session = new \core\session\manager();
+            $session->write_close(); // unlock session during file serving.
             send_stored_file($file, 0, 0, true); // must force download - security!
         } else {
             send_file_not_found();

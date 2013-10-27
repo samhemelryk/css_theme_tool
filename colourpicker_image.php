@@ -34,8 +34,7 @@ function produce_colorpicker() {
     $matrixcount = count($matrices);
     $limit = ceil($width/$matrixcount);
     $heightbreak = floor($height/2);
-    $heightgap = 0;
-    
+
     header("Content-type: image/png");
     $image = imagecreatetruecolor($width, $height);
     imagecolorallocate($image, 0, 0, 0);
