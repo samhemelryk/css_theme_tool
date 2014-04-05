@@ -8,7 +8,6 @@
 .jsenabled .block_css_theme_tool {display:block;}
 .jsenabled.ie6 .block_css_theme_tool {display:hidden;}
 
-.css-theme-tool-overlay .css_builder_overlay {background-color:#EEE;padding:10px;border:1px solid #333;overflow:auto;}
 .css-theme-tool-overlay .css_builder .css_selectors {background-color:#FFF;margin:10px;border:1px solid #BBB;}
 .css-theme-tool-overlay .css_builder .css_selectors .tagselectorbox {border-top:1px solid #DDD;overflow:hidden;font-size:8pt;clear:both;padding:2px;}
 .css-theme-tool-overlay .css_builder .css_selectors .tagselectorbox:first-child {border-top-width:0px;}

@@ -52,7 +52,7 @@ CSSBUILDER.prototype = {
     allreadytogo : false,
     /**
      * Used by all components to display their content nicely
-     * @var {YUI.Overlay}
+     * @var {M.core.dialogue}
      */
     overlay : null,
     /**
@@ -62,25 +62,17 @@ CSSBUILDER.prototype = {
         // Store the arguments
         this.themetool = config.cssthemetool;
 
-        var bd = Y.one(document.body);
-        var winheight = bd.get('winHeight');
+        var bd = Y.one(document.body),
+            modal;
         // Instantiate the overlay
-        this.overlay = new Y.Overlay({
+        this.overlay = new M.core.dialogue({
+            headerContent : M.util.get_string('csseditor', 'block_css_theme_tool'),
             bodyContent : 'temp',
-            width: '80%',
-            height : Math.floor(winheight*0.8),
             visible : false,
-            zIndex : 500,
-            id : 'cssbuilder-overlay'
+            id : 'cssbuilder-overlay',
+            width : 'auto'
         });
-        // Render it on the body (less chance of clipping)
-        this.overlay.render(bd);
-        Y.one('#cssbuilder-overlay').addClass('css-theme-tool-overlay').setStyle('position', 'fixed').setStyle('margin', Math.floor(winheight*0.1)+'px 10%');
-        Y.on('windowresize', function(e){
-            var winheight = bd.get('winHeight');
-            this.overlay.set('height', Math.floor(winheight*0.8));
-            Y.one('#cssbuilder-overlay').setStyle('marginTop', Math.floor(winheight*0.1));
-        }, this);
+        Y.one('#cssbuilder-overlay').addClass('css-theme-tool-overlay');
         // Add our custom class
         this.overlay.bodyNode.addClass('css_builder_overlay');
 
@@ -95,7 +87,7 @@ CSSBUILDER.prototype = {
         // Render it to the body, it needs to be here to avoid clipping rules
         this.mask.render(Y.one(document.body));
         // Prepare the overlay div as a modal
-        var modal = this.mask.bodyNode.ancestor('.yui3-overlay');
+        modal = this.mask.bodyNode.ancestor('.yui3-overlay');
         if (modal) {
             // Has to be completely inivisble
             modal.setStyle('opacity', '0.0');
@@ -166,29 +158,16 @@ CSSBUILDER.prototype = {
         // Hide the divs so we don't get this node back
         div.setStyle('visibility', 'hidden');
         // Get the event below the click
-        var target = Y.one(document.elementFromPoint(e.clientX, e.clientY));
+        var target = Y.one(document.elementFromPoint(e.clientX, e.clientY)),
+            pos = target.getXY();
         // Show the divs again
         div.setStyle('visibility', 'visible');
         // Show the mask again
         this.mask.show();
-        // Get the position of the target node
-        var pos = target.getXY();
         div.setXY(pos);
         div.setStyle('width', target.get('offsetWidth')+'px');
         div.setStyle('height', target.get('offsetHeight')+'px');
         div.one('.inner-border').setStyle('width', (target.get('offsetWidth')-12)+'px').setStyle('height', (target.get('offsetHeight')-12)+'px');
-        return;
-
-        // Get the scroll position .... grr
-        var scrollY = Y.one('window').get('scrollY');
-        // Get the window width and hieght
-        var winpos = [Y.one(document.body).get('winWidth'), Y.one(document.body).get('winHeight')];
-        // Change the highlight div dimensions to highlight the node being hovered over
-
-        div.one('.top').setStyle('height', Math.round(pos[1]-scrollY).toString()+'px');
-        div.one('.left').setStyle('width', Math.round(pos[0]).toString()+'px');
-        div.one('.bottom').setStyle('height', Math.round(winpos[1]-pos[1]-target.get('offsetHeight')+scrollY).toString()+'px');
-        div.one('.right').setStyle('width', Math.round(winpos[0]-pos[0]-target.get('offsetWidth')).toString()+'px');
     },
     /**
      * Highlights all of the cells that the current rule selector is going to be
@@ -216,6 +195,7 @@ CSSBUILDER.prototype = {
             container.append(highlight);
         }, this);
     },
+
     /**
      * Previews the style created so far within the page
      *
@@ -225,13 +205,14 @@ CSSBUILDER.prototype = {
         if (Y.one('#nextstyleinput')) {
             this.process_style(null, Y.one('#nextstyleinput'), true);
         }
-        var selector = this.get_selected_selector();
-        var styles = [];
+        var selector = this.get_selected_selector(),
+            styles = [];
         this.overlay.bodyNode.all('.style_definitions .styleattribute').each(function(){
             styles.push(this.get('innerHTML'));
         });
         this.themetool.previewtag.setContent(selector+' {'+styles.join('')+'}');
     },
+
     /**
      * Builds the controls div for this component and stores it. This is done to increase
      * percieved performance when using the tool!
@@ -242,12 +223,13 @@ CSSBUILDER.prototype = {
         }
         if (this.controlsnode == null) {
             // Some aliases
-            var create = Y.Node.create;
-            var str = M.str.block_css_theme_tool;
-            var self = M.block_css_theme_tool;
+            var create = Y.Node.create,
+                str = M.str.block_css_theme_tool,
+                controls,
+                buttons;
 
             // Creating control structure
-            var controls = create('<div class="css_selector_controls"></div>');
+            controls = create('<div class="css_selector_controls"></div>');
             controls.append(create('<div class="control colourpicker" title="'+str.fontcolour+'"> </div>'));
             controls.append(create('<div class="control backgroundcolourpicker" title="'+str.backgroundcolour+'"> </div>'));
             controls.append(create('<div class="control bold" title="'+str.bold+'"> </div>'));
@@ -259,7 +241,7 @@ CSSBUILDER.prototype = {
             controls.append(create('<div class="control roundedcorners" title="'+str.roundedcorners+'"> </div>'));
             controls.append(create('<div class="control opacity" title="'+str.opacity+'"> </div>'));
 
-            var buttons = create('<div class="paramcenter"></div>');
+            buttons = create('<div class="paramcenter"></div>');
             buttons.append(create('<input type="button" id="highlightaffectedcells" value="'+str.highlight+'" />'));
             buttons.append(create('<input type="button" id="previewaffectedcells" value="'+str.preview+'" />'));
             buttons.append(create('<input type="button" id="viewthepage" value="'+str.viewthepage+'" />'));
@@ -269,33 +251,57 @@ CSSBUILDER.prototype = {
             buttons.one('#cancelnewstyle').on('click', this.hide, this);
             buttons.one('#highlightaffectedcells').on('mousedown', function() {
                 this.highlight_affected_cells();
-                this.overlay.bodyNode.setStyle('opacity', 0.2);
-            }, this);
-            buttons.one('#highlightaffectedcells').on('mouseup', function(){
-                this.overlay.bodyNode.setStyle('opacity', 1.0);
-                Y.all('.cssbuilder_highlight_container').remove();
+                this.overlay.get('boundingBox').setStyle('opacity', 0.2);
+                Y.one(document.body).once('mouseup', function() {
+                    this.overlay.get('boundingBox').setStyle('opacity', 1.0);
+                    Y.all('.cssbuilder_highlight_container').remove();
+                }, this);
             }, this);
             buttons.one('#previewaffectedcells').on('mousedown', function(){
                 this.preview_affected_cells();
-                this.overlay.bodyNode.setStyle('opacity', 0.2);
-            }, this);
-            buttons.one('#previewaffectedcells').on('mouseup', function(){
-                this.overlay.bodyNode.setStyle('opacity', 1.0);
-                this.themetool.previewtag.setContent('');
+                this.overlay.get('boundingBox').setStyle('opacity', 0.2);
+                Y.one(document.body).once('mouseup', function() {
+                    this.overlay.get('boundingBox').setStyle('opacity', 1.0);
+                    this.themetool.previewtag.setContent('');
+                }, this);
             }, this);
             buttons.one('#viewthepage').on('mousedown', function(){
                 this.setStyle('opacity', 0.2);
-            }, this.overlay.bodyNode);
-            buttons.one('#viewthepage').on('mouseup', function(){
-                this.setStyle('opacity', 1.0);
-            }, this.overlay.bodyNode);
+                Y.one(document.body).once('mouseup', function() {
+                    this.setStyle('opacity', 1.0);
+                }, this);
+            }, this.overlay.get('boundingBox'));
             controls.append(buttons);
 
             // Wiring control structure
-            this.prepare_component_use(controls.one('.control.colourpicker'), 'color', 'moodle-block_css_theme_tool-csseditor-colourpicker', 'init_colour_picker', [{cssbuilder:this, button:controls.one('.control.colourpicker'), cssstyle:'color'}]);
-            this.prepare_component_use(controls.one('.control.backgroundcolourpicker'), 'backgroundcolor', 'moodle-block_css_theme_tool-csseditor-colourpicker', 'init_colour_picker', [{cssbuilder:this, button:controls.one('.control.backgroundcolourpicker'), cssstyle:'background-color'}]);
-            this.prepare_component_use(controls.one('.control.roundedcorners'), 'roundedcorners', 'moodle-block_css_theme_tool-csseditor-dialogueroundedcorners', 'init_rounded_corners', [{cssbuilder:this, button:controls.one('.control.roundedcorners')}]);
-            this.prepare_component_use(controls.one('.control.opacity'), 'opacity', 'moodle-block_css_theme_tool-csseditor-dialogueopacity', 'init_dialogue_opacity', [{cssbuilder:this, button:controls.one('.control.opacity')}]);
+            this.prepare_component_use(
+                controls.one('.control.colourpicker'),
+                'color',
+                'moodle-block_css_theme_tool-csseditor-colourpicker',
+                'init_colour_picker',
+                [{cssbuilder: this, button: controls.one('.control.colourpicker'), cssstyle: 'color'}]
+            );
+            this.prepare_component_use(
+                controls.one('.control.backgroundcolourpicker'),
+                'backgroundcolor',
+                'moodle-block_css_theme_tool-csseditor-colourpicker',
+                'init_colour_picker',
+                [{cssbuilder:this, button:controls.one('.control.backgroundcolourpicker'), cssstyle:'background-color'}]
+            );
+            this.prepare_component_use(
+                controls.one('.control.roundedcorners'),
+                'roundedcorners',
+                'moodle-block_css_theme_tool-csseditor-dialogueroundedcorners',
+                'init_rounded_corners',
+                [{cssbuilder: this, button: controls.one('.control.roundedcorners')}]
+            );
+            this.prepare_component_use(
+                controls.one('.control.opacity'),
+                'opacity',
+                'moodle-block_css_theme_tool-csseditor-dialogueopacity',
+                'init_dialogue_opacity',
+                [{cssbuilder:this, button:controls.one('.control.opacity')}]
+            );
             
             this.components['bold'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.bold'), cssstyle:'font-weight: bold;'});
             this.components['italic'] = new ADDSYTLEBUTTON({cssbuilder:this, button:controls.one('.control.italic'), cssstyle:'font-style: italic;'});
@@ -329,12 +335,11 @@ CSSBUILDER.prototype = {
         // Hide all other components
         this.themetool.hide_components();
         // Create the HTML for the comontent
-        var content = Y.Node.create('<div class="css_builder"></div>');
-        var selectorcontent = Y.Node.create('<div class="css_selectors"></div>');
-        var selectors = [];
+        var content = Y.Node.create('<div class="css_builder"></div>'),
+            selectorcontent = Y.Node.create('<div class="css_selectors"></div>'),
+            selectors = [],
+            editseletor = null;
         this.selectorcount = 0;
-
-        var editseletor = null;
         if (arguments.length > 1) {
             var editseletor = arguments[1];
         }
@@ -385,17 +390,35 @@ CSSBUILDER.prototype = {
      */
     generate_selectors_for_node : function(node, select) {
         // Get the tag name
-        var tag = node.get('nodeName').toLowerCase();
-        // Get the tag id
-        var tagid = node.getAttribute('id');
-        // Get an array of classes
-        var tagclasses = node.get('className').split(' ');
+        var tag = node.get('nodeName').toLowerCase(),
+            // Get the tag id
+            tagid = node.getAttribute('id'),
+            // Get an array of classes
+            tagclasses = node.get('className').split(' '),
+            // Create a container
+            content = Y.Node.create('<div class="tagselectorbox"></div>'),
+            tregex,
+            regex,
+            iddiv,
+            idinput,
+            idlabel,
+            propertiesdiv,
+            properties,
+            tagproperty,
+            tagpropertyinput,
+            tagpropertylabel,
+            pregex,
+            classes,
+            tagclass,
+            tagclassinput,
+            tagclasslabel,
+            cregex,
+            c,
+            i;
 
-        // Create a container
-        var content = Y.Node.create('<div class="tagselectorbox"></div>');
         // Add the tag selector
         content.append(Y.Node.create('<div class="tagname"><input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value="'+tag+'" /><label id="tagselector_'+this.selectorcount+'_label">'+tag+'<label></div>'));
-        var tregex = new RegExp(tag);
+        tregex = new RegExp(tag);
         if (select != null && tregex.test(select)) {
             content.one('.tagname .tagselector').setAttribute('checked', true);
             content.one('.tagname').addClass('isselected');
@@ -404,26 +427,26 @@ CSSBUILDER.prototype = {
         if (tagid && tagid != '' && tagid.match && !tagid.match(/^yui_\d/)) {
             // Increase the selector count VERY IMPORTANT
             this.selectorcount++;
-            var iddiv = Y.Node.create('<div class="tagid"> </div>')
-            var idinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value="#'+tagid+'" />');
-            var idlabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">#'+tagid+'<label>');
+            iddiv = Y.Node.create('<div class="tagid"> </div>'),
+            idinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value="#'+tagid+'" />'),
+            idlabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">#'+tagid+'<label>');
             iddiv.append(idinput).append(idlabel);
             content.append(iddiv);
-            var regex = new RegExp('#'+tagid+'( |$)');
+            regex = new RegExp('#'+tagid+'( |$)');
             if ((/^page\-[a-zA-Z_\-]+/.test(tagid) && tag == 'body' && select==null) || (select != null && regex.test(select))) {
                 idinput.setAttribute('checked', true);
                 iddiv.addClass('isselected');
             }
         }
 
-        var propertiesdiv = Y.Node.create('<div class="tagproperties"></div>');
-        var properties = ['after', 'before', 'last-child', 'first-child'];
+        propertiesdiv = Y.Node.create('<div class="tagproperties"></div>');
+        properties = ['after', 'before', 'last-child', 'first-child'];
         for (i in properties) {
             this.selectorcount++;
-            var tagproperty = Y.Node.create('<div class="tagproperty"></div>');
-            var tagpropertyinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value=":'+properties[i]+'" />');
-            var tagpropertylabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">:'+properties[i]+'<label>');
-            var pregex = new RegExp(':'+properties[i]);
+            tagproperty = Y.Node.create('<div class="tagproperty"></div>');
+            tagpropertyinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value=":'+properties[i]+'" />');
+            tagpropertylabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">:'+properties[i]+'<label>');
+            pregex = new RegExp(':'+properties[i]);
             if (select != null && pregex.test(select)) {
                 // Check it by default IF it is the first class and not one of the nondefaultclasses
                 tagproperty.addClass('isselected');
@@ -438,9 +461,9 @@ CSSBUILDER.prototype = {
 
         // Add each class in the classes array to the tag selectors
         if (tagclasses && tagclasses.length > 0) {
-            var classes = Y.Node.create('<div class="tagclasses"></div>');
-            for (var i in tagclasses) {
-                var c = tagclasses[i];
+            classes = Y.Node.create('<div class="tagclasses"></div>');
+            for (i in tagclasses) {
+                c = tagclasses[i];
                 // Don't process if its empty or based on settings for the tool.
                 if (!c || c=='' || (!this.themetool.cfg.showadvancedbodytags && tag=='body' && !c.match(/^(page|path)\-/))) {
                     continue;
@@ -448,10 +471,10 @@ CSSBUILDER.prototype = {
                 // Increase the selector count VERY IMPORTANT
                 this.selectorcount++;
                 // Add the class as a selector
-                var tagclass = Y.Node.create('<div class="tagclass"></div>');
-                var tagclassinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value=".'+c+'" />');
-                var tagclasslabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">.'+c+'<label>');
-                var cregex = new RegExp('\\.'+c);
+                tagclass = Y.Node.create('<div class="tagclass"></div>');
+                tagclassinput = Y.Node.create('<input class="tagselector" type="checkbox" id="tagselector_'+this.selectorcount+'" value=".'+c+'" />');
+                tagclasslabel = Y.Node.create('<label id="tagselector_'+this.selectorcount+'_label">.'+c+'<label>');
+                cregex = new RegExp('\\.'+c);
                 if ((select==null && i==0 && !M.util.in_array(c, this.nondefaultclasses)) || (select != null && cregex.test(select))) {
                     // Check it by default IF it is the first class and not one of the nondefaultclasses
                     tagclass.addClass('isselected');
@@ -476,15 +499,15 @@ CSSBUILDER.prototype = {
      */
     add_style : function(e) {
         // Get the definitions UL
-        var ul = this.overlay.bodyNode.one('.style_definitions');
-        // Gets the new style li
-        var addnewstyle = ul.one('.addnewstyle').ancestor('li');
+        var ul = this.overlay.bodyNode.one('.style_definitions'),
+            // Gets the new style li
+            addnewstyle = ul.one('.addnewstyle').ancestor('li'),
+            // Create a new li
+            newstyleli = Y.Node.create('<li></li>'),
+            // Create an input to type the style into
+            newstyleinput = Y.Node.create('<input type="text" value="" id="nextstyleinput" />');
         // Hide it :)
         addnewstyle.addClass('hideme');
-        // Create a new li
-        var newstyleli = Y.Node.create('<li></li>');
-        // Create an input to type the style into
-        var newstyleinput = Y.Node.create('<input type="text" value="" id="nextstyleinput" />');
         // Combine
         newstyleli.append(newstyleinput);
         // Add the new LI to the UL collection

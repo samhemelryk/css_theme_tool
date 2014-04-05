@@ -140,7 +140,8 @@ class block_css_theme_tool extends block_base {
             'onlyviewmyrulesdesc',
             'preview',
             'viewthepage',
-            'colourpickertitle'
+            'colourpickertitle',
+            'csseditor'
         ), 'block_css_theme_tool');
     }
 

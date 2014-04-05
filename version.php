@@ -9,5 +9,5 @@
 $plugin->version = 2013102800;
 $plugin->release = '0.4.0 (beta)';
 $plugin->component = 'block_css_theme_tool';
-$plugin->requires   = 2013102500; // Moodle 2.6 beta release
+$plugin->requires   = 2010102500; // Moodle 2.6 beta release
 $plugin->maturity = MATURITY_BETA;

@@ -18,7 +18,8 @@
     "moodle-block_css_theme_tool-csseditor-cssbuilder": {
         "requires": [
             "moodle-block_css_theme_tool-csseditor",
-            "overlay"
+            "overlay",
+            "moodle-core-notification-dialogue"
         ]
     },
     "moodle-block_css_theme_tool-csseditor-cssviewer": {
